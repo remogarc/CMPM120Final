@@ -3,3 +3,4 @@ Final Project for CMPM120
 
 Credits:
 - Pallavi Rajeev
+- Aaron Dangc
