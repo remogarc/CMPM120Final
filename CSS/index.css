@@ -10,16 +10,6 @@ body {
 }
 
 
-div.square {
-    width: 100px;
-    height: 100px;
-    background-color: red;
-    margin: 10px;
-    /* float: left; */
-    border-radius: 10px;
-    box-shadow: 5px 5px 5px #888888;
-    transition: all 0.5s;
-}
 
 div.header {
     background-color: rgb(34, 147, 124);
