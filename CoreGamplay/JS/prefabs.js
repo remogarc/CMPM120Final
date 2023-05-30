@@ -127,11 +127,17 @@ export class TouchControls {
         // Create the left triangle
         this.leftTriangle = this.scene.add.triangle(50, height -30, -20, 0, 20, -20, 20, 18, 0x00ff00);
         this.leftTriangle.setOrigin(0.5, 0.5);
-        this.leftTriangle.setInteractive();
+        this.leftTriangle.setInteractive(
+            new Phaser.Geom.Triangle(-20, 0, 20, -20, 20, 20),
+            Phaser.Geom.Triangle.Contains  
+        );
         // Create the right triangle
         this.rightTriangle = this.scene.add.triangle(150, height -30, -20, -20, -20, 20, 20, 0, 0x0000ff);
         this.rightTriangle.setOrigin(0.5, 0.5);
-        this.rightTriangle.setInteractive();
+        this.rightTriangle.setInteractive(
+            new Phaser.Geom.Triangle(-20, -20, -20, 20, 20, 0),
+            Phaser.Geom.Triangle.Contains            
+        );
         // Set up touch event handlers
         // Up triangle
         this.upTriangle.on('pointerdown', this.handUpTriangleDown, this);
