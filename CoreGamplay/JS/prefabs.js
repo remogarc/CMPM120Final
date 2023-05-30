@@ -69,8 +69,6 @@ export class Player extends Phaser.GameObjects.Rectangle {
     constructor(scene, x, y, width, height, color) {
         // Call Phaser.Physics.Arcade.Sprite constructor
         super(scene, x, y, width, height, color);
-
-        
         // Add to scene
         scene.add.existing(this);
         // Enable physics for the player
