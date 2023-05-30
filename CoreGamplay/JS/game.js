@@ -1,4 +1,4 @@
-import { Player,TouchControls } from './prefabs.js';
+import { Player,TouchControls,Platform } from './prefabs.js';
 
 console.log('js loaded');
 
@@ -98,14 +98,40 @@ class TestLevel extends Phaser.Scene {
 
     }
     create() {
-        // this.cameras.main.setBackgroundColor('#000f00');
         this.cameras.main.setBackgroundColor('#808080');
-        this.touchControls = new TouchControls(this);
 
-        
+        // Canvas width and height  
+        const canvasWidth = this.cameras.main.width;
+        const canvasHeight = this.cameras.main.height;
+
+        // Create and add the platform to the scene
+        const platformWidth = canvasWidth;
+        const platformHeight = 30;
+        const platformX = canvasWidth / 2;
+        const platformY = canvasHeight - platformHeight / 2;
+        const platformColor = 0xff0000;
+
+        this.platform = new Platform(this, platformX, platformY, platformWidth, platformHeight, platformColor);
+
+        // Create and add the player to the scene
+        const playerX = platformX;
+        const playerY = platformY - platformHeight / 2 - 25; // Adjust the height based on the player's size
+        const playerWidth = 50;
+        const playerHeight = 50;
+        const playerColor = 0x00ff00;
+
+        this.player = new Player(this, playerX, playerY, playerWidth, playerHeight, playerColor);
+
+        // collision detection between player and platform
+        this.physics.add.collider(this.player, this.platform);
+        // Touch Controls
+        this.touchControls = new TouchControls(this, this.player);
+
     }
-
-    update() {}
+    update(time, delta) {
+      // Update the touch controls
+      this.touchControls.update(delta);
+    }
 }
 
 
@@ -142,7 +168,7 @@ const config = {
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: { y: 0 },
+        gravity: { y: 10 },
         debug: true,
       },
     },
