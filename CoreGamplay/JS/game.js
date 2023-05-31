@@ -127,12 +127,15 @@ class TestLevel extends Phaser.Scene {
         // Touch Controls
         this.touchControls = new TouchControls(this, this.player);
 
+        // Cursor Controls
+        this.cursorControls = new CursorControls(this, this.player);
+
     }
     update(time, delta) {
       // // Update the cursor controls
-      // this.cursorControls.update(delta);
+      this.cursorControls.update();
       // Update the touch controls
-      this.touchControls.update(delta);
+      // this.touchControls.update();
     }
 }
 
@@ -173,6 +176,9 @@ const config = {
         gravity: { y: 10 },
         debug: true,
       },
+    },
+    input: {
+      keyboard: true,
     },
     scene: [Menu,TestLevel],
   };

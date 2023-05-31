@@ -103,61 +103,47 @@ export class Player extends Phaser.GameObjects.Rectangle {
 
 // Cursor Controls prefab
 export class CursorControls {
-    constructor(scene, player,platform) {
+    constructor(scene, player) {
         // Add to scene
         this.scene = scene;
         // Add player
         this.player = player;
-
-        // Add platform
-        this.platform = platform;
-
         // Initialize player's velocity
         this.player.body.setVelocity(0, 0);
         // Get the height of the game canvas
         const { width,height } = scene.scale;
 
         // Import cursor controls
-        this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = scene.input.keyboard.createCursorKeys();
     }
-    update(delta) {
-        // console.log("update touch controls");
-        if (this.cursors.left.isDown){
+    update() {
+        if (this.cursors.left.isDown) {
             this.player.moveLeft();
-            // this.player.anims.play('left', true);
-        }
-        else if (this.cursors.right.isDown){
+          } else if (this.cursors.right.isDown) {
             this.player.moveRight();
-            // this.player.anims.play('right', true);
+          } else {
+            this.player.stop();
+          }
+      
+        if (this.cursors.up.isDown && this.player.body.onFloor()) {
+        this.player.jump();
         }
-        else{
-            // idle
-            this.player.setVelocityX(0);
-            // this.player.anims.play('turn');
-        }
-        if (this.cursors.up.isDown){
-            this.player.jump();
-        }
+       
     }
 }
 
 
 // Touch Controls prefab
 export class TouchControls {
-    constructor(scene, player,platform) {
+    constructor(scene, player) {
         // Add to scene
         this.scene = scene;
         // Add player
         this.player = player;
-
-        // Add platform
-        this.platform = platform;
-
         // Initialize player's velocity
         this.player.body.setVelocity(0, 0);
         // Get the height of the game canvas
         const { width,height } = scene.scale;
-
         /// Create the up triangle
         this.upTriangle = this.scene.add.triangle(100, height - 100, 0, 0, -20, 40, 20, 40, 0xff0000);
         this.upTriangle.setOrigin(0.5, 0.5);
