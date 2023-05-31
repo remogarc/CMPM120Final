@@ -24,8 +24,8 @@ export class Player extends Phaser.GameObjects.Rectangle {
         super(scene, x, y, width, height, color);
         scene.add.existing(this);
         scene.physics.world.enable(this);
-        
-        // this.body.setCollideWorldBounds(true);
+
+        this.body.setCollideWorldBounds(true);
         this.body.gravity.y = 200;
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
@@ -98,3 +98,82 @@ export class InputControls {
     }
   }
   
+
+// Player character sprite prefab 
+export class PlayerChar extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, texture, frame) {
+        super(scene,x,y,texture,frame);
+        scene.add.existing(this);
+        scene.physics.world.enable(this);
+        // Set physics properties
+        this.body.setCollideWorldBounds(true);
+        this.body.gravity.y = 200;
+        this.body.velocity.x = 0;
+        this.body.velocity.y = 0;
+        this.jumpVelocity = -300;
+        // create running animations
+        this.anims.create({
+            key: texture,
+            frames: this.anims.generateFrameNumbers(texture, { start: 0, end: 7}),
+            frameRate: 12,
+            repeat: -1
+        });
+        // Set initial direction facing right
+        this.direction = 'right';
+        this.setFlipX(true);
+        // Register the 'animationcomplete' event listener
+        this.on('animationcomplete', () => {
+            console.log('animation complete set isPlayingAnimation to false')
+            this.isPlayingAnimation = false;
+        });
+        // this.play(texture);
+    }
+    moveLeft() {
+        this.body.velocity.x = -100;
+        this.setDirection('left');
+        this.playAnimation();
+    }
+    moveRight() {
+        this.body.velocity.x = 100;
+        this.setDirection('right');
+        this.playAnimation();
+    }
+    jump() {
+        if (this.body.onFloor()) {
+            this.body.velocity.y = this.jumpVelocity;
+        }
+    }
+    stop() {
+        this.body.velocity.x = 0;
+        this.stopAnimation();
+    }
+    update(){
+        //  check if is not moving we want to stop that animation
+        if (this.body.velocity.x === 0) {
+            this.stop();
+        }
+    }
+    setDirection(direction) {
+        if (this.direction !== direction) {
+          this.direction = direction;
+          if (direction === 'left') {
+            this.setFlipX(false);
+          } else {
+            this.setFlipX(true);
+          }
+        }
+    }
+    playAnimation() {
+        if (!this.isPlayingAnimation) {
+          this.isPlayingAnimation = true;
+          this.anims.play('player');
+        }
+    }
+    stopAnimation() {
+        if (this.isPlayingAnimation) {
+            this.anims.stop();
+            this.isPlayingAnimation = false;
+        }
+    }
+     
+}

@@ -1,4 +1,5 @@
-import { Player,InputControls,Platform } from './prefabs.js';
+// import { t } from 'tar';
+import { Player,InputControls,Platform,PlayerChar } from './prefabs.js';
 
 console.log('js loaded');
 
@@ -116,7 +117,7 @@ class TestLevel extends Phaser.Scene {
         const platformY = canvasHeight - platformHeight / 2;
         const platformColor = 0xff0000;
 
-        this.platform = new Platform(this, platformX, platformY, platformWidth, platformHeight, platformColor);
+        // this.platform = new Platform(this, platformX, platformY, platformWidth, platformHeight, platformColor);
 
         // Create and add the player to the scene
         const playerX = platformX;
@@ -129,13 +130,26 @@ class TestLevel extends Phaser.Scene {
 
         // this.player.stop();
 
+        this.character = this.add.sprite(100, 100, 'player');
+        this.character.setScale(0.5);
+        this.anims.create({
+            key: 'player',
+            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 7 }),
+            frameRate: 12,
+            repeat: -1
+        })
+        this.character.anims.play('player', true);
+
+        const nova = new PlayerChar(this, 10, this.scale.height -100, 'player', 0)
+        nova.setScale(0.5);
 
         // collision detection between player and platform
         this.physics.add.collider(this.player, this.platform);
-        this.inputControls = new InputControls(this, this.player);
+        this.inputControls = new InputControls(this, nova);
     }
     update() {
         this.inputControls.update();
+        
     }
 }
 
@@ -149,6 +163,8 @@ class MainGame extends Phaser.Scene {
   }
   preload() {
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+    this.load.spritesheet('player', 'Assets/player.png', { frameWidth: 250, frameHeight: 360, endFrame: 8 });
+
   }
   create() {
     WebFont.load({
