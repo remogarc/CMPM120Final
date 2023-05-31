@@ -94,8 +94,6 @@ class TestLevel extends Phaser.Scene {
         super('TestLevel');
         this.platform = null;
         this.player = null;
-        this.cursorControls = null;
-        this.touchControls = null;
     }
     preload(){
 
@@ -127,9 +125,7 @@ class TestLevel extends Phaser.Scene {
 
         // collision detection between player and platform
         this.physics.add.collider(this.player, this.platform);
-
         this.inputControls = new InputControls(this, this.player);
-
     }
     update() {
         this.inputControls.update();

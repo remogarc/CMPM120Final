@@ -91,22 +91,27 @@ export class InputControls {
     }
   
     update() {
-      const pointer = this.scene.input.activePointer;
-  
-      if (
-        (this.cursors.left.isDown || this.leftTriangle.getBounds().contains(pointer.x, pointer.y)) &&
-        (this.cursors.right.isDown || this.rightTriangle.getBounds().contains(pointer.x, pointer.y))
-      ) {
-        this.player.stop();
-      } else if (this.cursors.left.isDown || this.leftTriangle.getBounds().contains(pointer.x, pointer.y)) {
-        this.player.moveLeft();
-      } else if (this.cursors.right.isDown || this.rightTriangle.getBounds().contains(pointer.x, pointer.y)) {
-        this.player.moveRight();
-      } else if (this.cursors.up.isDown || this.upTriangle.getBounds().contains(pointer.x, pointer.y)) {
-        this.player.jump();
-      } else {
-        this.player.stop();
-      }
+        // detecting point or tap on the screen
+        const pointer = this.scene.input.activePointer;
+
+        // if the left and right keys are pressed or the left and right triangles are pressed
+        if (
+            (this.cursors.left.isDown || this.leftTriangle.getBounds().contains(pointer.x, pointer.y)) &&
+            (this.cursors.right.isDown || this.rightTriangle.getBounds().contains(pointer.x, pointer.y))
+        ) {
+            this.player.stop();
+        // if the left key is pressed or the left triangle is pressed
+        } else if (this.cursors.left.isDown || this.leftTriangle.getBounds().contains(pointer.x, pointer.y)) {
+            this.player.moveLeft();
+        // if the right key is pressed or the right triangle is pressed
+        } else if (this.cursors.right.isDown || this.rightTriangle.getBounds().contains(pointer.x, pointer.y)) {
+            this.player.moveRight();
+        // if the up key is pressed or the up triangle is pressed
+        } else if (this.cursors.up.isDown || this.upTriangle.getBounds().contains(pointer.x, pointer.y)) {
+            this.player.jump();
+        } else {
+            this.player.stop();
+        }
     }
   }
   
