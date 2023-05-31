@@ -15,59 +15,42 @@ export class Platform extends Phaser.GameObjects.Rectangle {
         this.body.setAllowGravity(false)
         // Set physics properties
         this.body.setCollideWorldBounds(true)
-        // Listen for window resize events
-        window.addEventListener('resize', () => {
-            this.onResize(scene.scale.width);
-        });
-    
-    }
-    onResize(gameWidth) {
-        const canvasWidth = this.scene.cameras.main.width;
-        const canvasHeight = this.scene.cameras.main.height;
-        const scaleRatio = canvasWidth / gameWidth;
-
-        this.setSize(canvasWidth, this.height);
-        this.setPosition(canvasWidth / 2, canvasHeight - this.height / 2);
-        this.setScale(scaleRatio);
-    }
-    update(delta){
     }
 }
 
 // Player prefab (for now which is a rectangle)
 export class Player extends Phaser.GameObjects.Rectangle {
     constructor(scene, x, y, width, height, color) {
-      super(scene, x, y, width, height, color);
-      scene.add.existing(this);
-      scene.physics.world.enable(this);
-      this.body.setCollideWorldBounds(true);
-      this.body.gravity.y = 200;
-      this.body.velocity.x = 0;
-      this.body.velocity.y = 0;
-      this.jumpVelocity = -300;
+        super(scene, x, y, width, height, color);
+        scene.add.existing(this);
+        scene.physics.world.enable(this);
+        
+        // this.body.setCollideWorldBounds(true);
+        this.body.gravity.y = 200;
+        this.body.velocity.x = 0;
+        this.body.velocity.y = 0;
+        this.jumpVelocity = -300;
     }
   
     moveLeft() {
-      this.body.velocity.x = -100;
+        this.body.velocity.x = -100;
     }
   
     moveRight() {
-      this.body.velocity.x = 100;
+        this.body.velocity.x = 100;
     }
   
     jump() {
-      if (this.body.onFloor()) {
-        this.body.velocity.y = this.jumpVelocity;
+        if (this.body.onFloor()) {
+            this.body.velocity.y = this.jumpVelocity;
       }
     }
   
     stop() {
-      this.body.velocity.x = 0;
+        this.body.velocity.x = 0;
     }
   }
   
-  
-
 // InputControls prefab
 export class InputControls {
     constructor(scene, player) {

@@ -99,6 +99,10 @@ class TestLevel extends Phaser.Scene {
 
     }
     create() {
+        // Reset input state
+        this.input.keyboard.resetKeys();
+        this.input.mouse.releasePointerLock();
+
         this.cameras.main.setBackgroundColor('#808080');
 
         // Canvas width and height  
@@ -123,13 +127,15 @@ class TestLevel extends Phaser.Scene {
 
         this.player = new Player(this, playerX, playerY, playerWidth, playerHeight, playerColor);
 
+        // this.player.stop();
+
+
         // collision detection between player and platform
         this.physics.add.collider(this.player, this.platform);
         this.inputControls = new InputControls(this, this.player);
     }
     update() {
         this.inputControls.update();
-      
     }
 }
 
