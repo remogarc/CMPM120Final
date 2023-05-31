@@ -1,4 +1,4 @@
-import { Player,CursorControls,TouchControls,Platform } from './prefabs.js';
+import { Player,InputControls,Platform } from './prefabs.js';
 
 console.log('js loaded');
 
@@ -92,7 +92,10 @@ class Menu extends Phaser.Scene {
 class TestLevel extends Phaser.Scene {
     constructor() {
         super('TestLevel');
-        // this.touchControls = null;
+        this.platform = null;
+        this.player = null;
+        this.cursorControls = null;
+        this.touchControls = null;
     }
     preload(){
 
@@ -124,18 +127,13 @@ class TestLevel extends Phaser.Scene {
 
         // collision detection between player and platform
         this.physics.add.collider(this.player, this.platform);
-        // Touch Controls
-        this.touchControls = new TouchControls(this, this.player);
 
-        // Cursor Controls
-        this.cursorControls = new CursorControls(this, this.player);
+        this.inputControls = new InputControls(this, this.player);
 
     }
-    update(time, delta) {
-      // // Update the cursor controls
-      this.cursorControls.update();
-      // Update the touch controls
-      // this.touchControls.update();
+    update() {
+        this.inputControls.update();
+      
     }
 }
 
@@ -179,6 +177,7 @@ const config = {
     },
     input: {
       keyboard: true,
+      touch: true,
     },
     scene: [Menu,TestLevel],
   };
