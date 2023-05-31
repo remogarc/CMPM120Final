@@ -1,4 +1,4 @@
-import { Player,TouchControls,Platform } from './prefabs.js';
+import { Player,CursorControls,TouchControls,Platform } from './prefabs.js';
 
 console.log('js loaded');
 
@@ -129,6 +129,8 @@ class TestLevel extends Phaser.Scene {
 
     }
     update(time, delta) {
+      // // Update the cursor controls
+      // this.cursorControls.update(delta);
       // Update the touch controls
       this.touchControls.update(delta);
     }
