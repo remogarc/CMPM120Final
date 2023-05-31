@@ -1,5 +1,7 @@
 // // Where we will have our prefabs for the game
 
+console.log("prefabs.js loaded");
+
 export class Platform extends Phaser.GameObjects.Rectangle {
     constructor(scene, x, y, width, height, color) {
         // Call Phaser.GameObjects.Sprite constructor
