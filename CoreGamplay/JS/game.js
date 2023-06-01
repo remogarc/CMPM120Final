@@ -1,5 +1,5 @@
-// import { t } from 'tar';
-import { Player,InputControls,Platform,PlayerChar } from './prefabs.js';
+
+import { InputControls,Platform,PlayerChar } from './prefabs.js';
 
 console.log('js loaded');
 
@@ -101,35 +101,34 @@ class TestLevel extends Phaser.Scene {
     }
     create() {
         // Reset input state
-        this.input.keyboard.resetKeys();
-        this.input.mouse.releasePointerLock();
+        // this.input.keyboard.resetKeys();
+        // this.input.mouse.releasePointerLock();
+
 
         this.cameras.main.setBackgroundColor('#808080');
 
-        // Canvas width and height  
-        const canvasWidth = this.cameras.main.width;
-        const canvasHeight = this.cameras.main.height;
+        // Create the platform
+        const platform = new Platform(this, 600, this.scale.height - 100, 200, 20, '#000000');
+        
+        const platform2 = new Platform(this, 200, this.scale.height - 200, 200, 20, '#000000');
 
-        // Create and add the platform to the scene
-        const platformWidth = canvasWidth;
-        const platformHeight = 30;
-        const platformX = canvasWidth / 2;
-        const platformY = canvasHeight - platformHeight / 2;
-        const platformColor = 0xff0000;
+        const platform3 = new Platform(this, 600, this.scale.height - 350, 200, 20, '#000000');
 
-        // this.platform = new Platform(this, platformX, platformY, platformWidth, platformHeight, platformColor);
+        const platform4 = new Platform(this, 600, this.scale.height - 600, 200, 20, '#000000');
+     
+        const platform5 = new Platform(this, 200, this.scale.height - 450, 200, 20, '#000000');
 
-        // Create and add the player to the scene
-        const playerX = platformX;
-        const playerY = platformY - platformHeight / 2 - 25; // Adjust the height based on the player's size
-        const playerWidth = 50;
-        const playerHeight = 50;
-        const playerColor = 0x00ff00;
+        const portal = this.add.rectangle(600, 250, 100, 200,);
+        portal.setStrokeStyle(4, 0x000f00);
+        portal.setFillStyle(0x000f00); //
 
-        this.player = new Player(this, playerX, playerY, playerWidth, playerHeight, playerColor);
-
-        // this.player.stop();
-
+        // physics
+        this.physics.world.enable(portal);
+        this.physics.add.existing(portal);
+        portal.body.setAllowGravity(false);
+        portal.body.setImmovable(true);
+        
+        
         this.character = this.add.sprite(100, 100, 'player');
         this.character.setScale(0.5);
         this.anims.create({
@@ -142,15 +141,44 @@ class TestLevel extends Phaser.Scene {
 
         const nova = new PlayerChar(this, 10, this.scale.height -100, 'player', 0)
         nova.setScale(0.5);
+        // nova.setOrigin(0.5, 1);
 
-        // collision detection between player and platform
-        this.physics.add.collider(this.player, this.platform);
+        // Set up physics for the player
+        this.physics.world.enable(nova); // Enable physics for the player sprite
+        nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform
+        nova.body.setFriction(1); // Adjust friction as needed for smooth movement
+
+
+        // collision detection
+        this.physics.add.collider(nova,platform);
+        this.physics.add.collider(nova,platform2);
+        this.physics.add.collider(nova,platform3);
+        this.physics.add.collider(nova,platform4);
+        this.physics.add.collider(nova,platform5);
+     
+        this.physics.add.collider(nova,portal,this.goNext,null,this);
         this.inputControls = new InputControls(this, nova);
+
+
     }
     update() {
         this.inputControls.update();
-        
     }
+    goNext(){
+        this.scene.start('Testlevel2');
+    }
+}
+
+//  ------------------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------------------
+class Testlevel2 extends Phaser.Scene {
+  constructor() {
+    super('Testlevel2');
+  }
+  create(){
+    this.add.text(100, 100, 'Test Level 2');
+  }
+  update(){}
 }
 
 
@@ -190,14 +218,14 @@ const config = {
       default: 'arcade',
       arcade: {
         gravity: { y: 10 },
-        debug: true,
+        debug: false, // false
       },
     },
     input: {
       keyboard: true,
       touch: true,
     },
-    scene: [Menu,TestLevel],
+    scene: [Menu,TestLevel,Testlevel2],
   };
 
 const game = new Phaser.Game(config);

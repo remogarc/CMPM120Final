@@ -2,57 +2,8 @@
 
 console.log("prefabs.js loaded");
 
-export class Platform extends Phaser.GameObjects.Rectangle {
-    constructor(scene, x, y, width, height, color) {
-        // Call Phaser.GameObjects.Sprite constructor
-        super(scene, x, y, width, height, color)
-        // set color using setfillstyle
-        this.setFillStyle(color)
-        // Add to scene
-        scene.add.existing(this)
-        // Add to physics
-        scene.physics.add.existing(this)
-        // Set physics properties
-        this.body.setImmovable(true)
-        this.body.setAllowGravity(false)
-        // Set physics properties
-        this.body.setCollideWorldBounds(true)
-    }
-}
 
-// Player prefab (for now which is a rectangle)
-export class Player extends Phaser.GameObjects.Rectangle {
-    constructor(scene, x, y, width, height, color) {
-        super(scene, x, y, width, height, color);
-        scene.add.existing(this);
-        scene.physics.world.enable(this);
 
-        this.body.setCollideWorldBounds(true);
-        this.body.gravity.y = 200;
-        this.body.velocity.x = 0;
-        this.body.velocity.y = 0;
-        this.jumpVelocity = -300;
-    }
-  
-    moveLeft() {
-        this.body.velocity.x = -100;
-    }
-  
-    moveRight() {
-        this.body.velocity.x = 100;
-    }
-  
-    jump() {
-        if (this.body.onFloor()) {
-            this.body.velocity.y = this.jumpVelocity;
-      }
-    }
-  
-    stop() {
-        this.body.velocity.x = 0;
-    }
-  }
-  
 // InputControls prefab
 export class InputControls {
     constructor(scene, player) {
@@ -105,14 +56,12 @@ export class InputControls {
 export class PlayerChar extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame) {
         super(scene,x,y,texture,frame);
-        scene.add.existing(this);
-        scene.physics.world.enable(this);
-        // Set physics properties
-        this.body.setCollideWorldBounds(true);
-        this.body.gravity.y = 200;
-        this.body.velocity.x = 0;
-        this.body.velocity.y = 0;
-        this.jumpVelocity = -300;
+        // Add this game object to the owner scene
+        this.scene = scene;
+        //  Add this game object to the owner scene.
+        this.scene.add.existing(this);
+        // Enable physics for this game object
+        this.enablePhysics();
         // create running animations
         this.anims.create({
             key: texture,
@@ -120,23 +69,31 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
             frameRate: 12,
             repeat: -1
         });
-        // Set initial direction facing right
+
+        // Set initial direction of player facing right
         this.direction = 'right';
         this.setFlipX(true);
+
+        // change hitbox size
+        this.body.setSize(220, 300);
+
+
+
+
+
         // Register the 'animationcomplete' event listener
-        this.on('animationcomplete', () => {
-            console.log('animation complete set isPlayingAnimation to false')
-            this.isPlayingAnimation = false;
-        });
-        // this.play(texture);
+        // this.on('animationcomplete', () => {
+        //     console.log('animation complete set isPlayingAnimation to false')
+        //     this.isPlayingAnimation = false;
+        // });
     }
     moveLeft() {
-        this.body.velocity.x = -100;
+        this.body.velocity.x = -200;
         this.setDirection('left');
         this.playAnimation();
     }
     moveRight() {
-        this.body.velocity.x = 100;
+        this.body.velocity.x = 200;
         this.setDirection('right');
         this.playAnimation();
     }
@@ -177,5 +134,35 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
             this.isPlayingAnimation = false;
         }
     }
+    enablePhysics() {
+        //  Enable physics for this game object.
+        this.scene.physics.world.enable(this);
+        // Set physics properties
+        this.body.setCollideWorldBounds(true);
+        this.body.gravity.y = 200;
+        this.body.velocity.x = 0;
+        this.body.velocity.y = 0;
+        this.jumpVelocity = -250;
+    }
      
 }
+
+
+// Platform prefab
+export class Platform extends Phaser.GameObjects.Rectangle {
+    constructor(scene, x, y, width, height, color) {
+      super(scene, x, y, width, height);
+  
+      this.setFillStyle(color);
+  
+      scene.add.existing(this);
+      scene.physics.add.existing(this);
+  
+      // Set physics properties
+      this.body.setImmovable(true);
+      this.body.setAllowGravity(false);
+      this.body.setCollideWorldBounds(true);
+    }
+  }
+  
+  
