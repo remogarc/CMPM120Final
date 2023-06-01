@@ -2,8 +2,6 @@
 
 console.log("prefabs.js loaded");
 
-
-
 // InputControls prefab
 export class InputControls {
     constructor(scene, player) {
@@ -50,7 +48,6 @@ export class InputControls {
         }
     }
   }
-  
 
 // Player character sprite prefab 
 export class PlayerChar extends Phaser.GameObjects.Sprite {
@@ -69,33 +66,23 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
             frameRate: 12,
             repeat: -1
         });
-
         // Set initial direction of player facing right
         this.direction = 'right';
         this.setFlipX(true);
-
         // change hitbox size
-        this.body.setSize(220, 300);
-
-
-
-
-
-        // Register the 'animationcomplete' event listener
-        // this.on('animationcomplete', () => {
-        //     console.log('animation complete set isPlayingAnimation to false')
-        //     this.isPlayingAnimation = false;
-        // });
+        this.body.setSize(220, 320);
     }
     moveLeft() {
         this.body.velocity.x = -200;
         this.setDirection('left');
         this.playAnimation();
+        this.setFlipX(false); // Flip the sprite to face left
     }
     moveRight() {
         this.body.velocity.x = 200;
         this.setDirection('right');
         this.playAnimation();
+        this.setFlipX(true); // Flip the sprite to face right
     }
     jump() {
         if (this.body.onFloor()) {
@@ -103,8 +90,17 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         }
     }
     stop() {
+        // stop the player from moving and stop the animation
         this.body.velocity.x = 0;
         this.stopAnimation();
+        // set frame to 0 so player is not stuck in a running animation
+        this.setTexture('standingFrame');
+         // Set the standing still frame
+        if (this.direction === 'left') {
+            this.setFlipX(true); // Flip the sprite to face left
+        } else {
+            this.setFlipX(false); // Flip the sprite to face right
+        }
     }
     update(){
         //  check if is not moving we want to stop that animation
@@ -123,12 +119,14 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         }
     }
     playAnimation() {
+        // check if is not playing we want to play that animation
         if (!this.isPlayingAnimation) {
           this.isPlayingAnimation = true;
           this.anims.play('player');
         }
     }
     stopAnimation() {
+        // check if is playing we want to stop that animation
         if (this.isPlayingAnimation) {
             this.anims.stop();
             this.isPlayingAnimation = false;
@@ -147,21 +145,19 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
      
 }
 
-
 // Platform prefab
 export class Platform extends Phaser.GameObjects.Rectangle {
     constructor(scene, x, y, width, height, color) {
-      super(scene, x, y, width, height);
-  
-      this.setFillStyle(color);
-  
-      scene.add.existing(this);
-      scene.physics.add.existing(this);
-  
-      // Set physics properties
-      this.body.setImmovable(true);
-      this.body.setAllowGravity(false);
-      this.body.setCollideWorldBounds(true);
+        super(scene, x, y, width, height);
+        // Settting the color of the platform
+        this.setFillStyle(color);
+        // Add this game object to the owner scene.
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+        // Set physics properties
+        this.body.setImmovable(true);
+        this.body.setAllowGravity(false);
+        this.body.setCollideWorldBounds(true);
     }
   }
   

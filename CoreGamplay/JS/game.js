@@ -143,6 +143,8 @@ class TestLevel extends Phaser.Scene {
         nova.setScale(0.5);
         // nova.setOrigin(0.5, 1);
 
+        const standStill = this.add.image(100, 100, 'standingFrame', 0);
+
         // Set up physics for the player
         this.physics.world.enable(nova); // Enable physics for the player sprite
         nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform
@@ -192,6 +194,7 @@ class MainGame extends Phaser.Scene {
   preload() {
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
     this.load.spritesheet('player', 'Assets/player.png', { frameWidth: 250, frameHeight: 360, endFrame: 8 });
+    this.load.image('standingFrame', 'Assets/idle1.png');
 
   }
   create() {
@@ -218,7 +221,7 @@ const config = {
       default: 'arcade',
       arcade: {
         gravity: { y: 10 },
-        debug: false, // false
+        debug: true, // false
       },
     },
     input: {
