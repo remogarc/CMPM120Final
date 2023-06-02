@@ -1,8 +1,95 @@
+// Our prefab.js file is a collection of classes that we can use to create game objects.
+import { InputControls,Platform,PlayerChar,Trash } from './prefabs.js';
 
-import { InputControls,Platform,PlayerChar } from './prefabs.js';
+// test comment
+console.log('game.js loaded');
 
-console.log('js loaded');
+// ----------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------CODE BREAKDOWN------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------
 
+// ConfigureScene - preload assets and create the trash objects which all level scenes will use
+// Menu - create the menu scene
+// Level1 - create the first level scene
+// Level2 - create the second level scene
+// Level3 - create the third level scene
+// config - configure the game settings
+
+//  -----------------------------------------------------------------------------------------------------------------------
+//  -------------------------------------------------- ConfigureScene -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+class ConfigureScene extends Phaser.Scene {
+  constructor(scenekey){
+    super(scenekey);
+    // setting variables for our game to use and check
+    this.trashGroup = null;
+    this.touchedTrashCount = 0;
+    this.trashCount = 0;
+    this.nextLevel = 0;
+  }
+  preload(){
+    // Load the font
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+    // Player sprite
+    this.load.spritesheet('player', 'Assets/player.png', { frameWidth: 250, frameHeight: 360, endFrame: 8 });
+    this.load.image('standingFrame', 'Assets/idle1.png');
+    // Trash sprite
+    this.load.image('trash', 'Assets/trash.png');
+    // Earth background
+    this.load.image('earth', 'Assets/earth.png');
+    // Mars background
+    this.load.image('mars', 'Assets/mars.png');
+    // Ice background
+    this.load.image('ice', 'Assets/ice.png');
+    // portal
+    this.load.spritesheet('portal', 'Assets/portal.png', { frameWidth: 150, frameHeight: 175, endFrame: 30 });
+  }
+  create(){
+    WebFont.load({
+      google: {
+        families: ['Rubik Puddles'],
+      },
+      active: () => {
+        game.scene.start('Menu');
+      },
+    });
+  }
+  // Create the trash objects
+  createTrash(x,y,texture,group){
+    const trash = new Trash(this, x, y,texture);
+    trash.setScale(2);
+    group.add(trash);
+    // Enable physics for each trash object
+    this.physics.world.enable(trash);
+    trash.body.setAllowGravity(false); // Enable gravity for the trash object
+    trash.body.setImmovable(true);
+    trash.body.setCollideWorldBounds(true); // Prevent the trash object from moving outside the world bounds
+  }
+  trashTouched = (nova,trash) => {
+    this.touchedTrashCount++;
+    console.log('Nova picked up a piece of trash', this.touchedTrashCount);
+    trash.destroy();
+    // check if all trash is picked up
+    if(this.touchedTrashCount === this.countTrash){
+      this.allTrashTouched();
+    }
+  }
+  allTrashTouched(){
+    console.log('All trash touched');
+  }
+  goNext(nextlevel){
+    console.log('Going to next level', nextlevel);
+    // check if all trash has been picked up
+    if(this.touchedTrashCount == this.trashCount){
+      console.log('All trash picked up good work!');
+      this.scene.start(nextlevel);
+    }
+  }
+}
+
+//  -------------------------------------------------------------------------------------------------------------
+//  -------------------------------------------------- MENU -----------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------
 
 class Menu extends Phaser.Scene {
     constructor() {
@@ -31,10 +118,7 @@ class Menu extends Phaser.Scene {
     }
   
     shutdown() {
-      console.log('shutdown');
       this.scale.off('resize', this.resizeListener);
-      console.log(this.resizeListener);
-      console.log('shutdown has been called');
     }
   
     create() {
@@ -61,9 +145,9 @@ class Menu extends Phaser.Scene {
       this.startText.on('pointerdown', () => {
         this.isResizing = false; // Stop resizing
         this.shutdown();
-        this.scene.start('TestLevel');
+        this.scene.start('LevelOne');
       }, this);
-  
+
       this.tweens.add({
         targets: this.startText,
         alpha: 0,
@@ -72,13 +156,11 @@ class Menu extends Phaser.Scene {
         yoyo: true,
         repeat: -1,
       });
-  
+
       this.resizeListener = () => {
         this.updateTextOnResize();
-      };
-  
+      }; 
       this.scale.on('resize', this.resizeListener);
-  
       // Initial resize call to set the correct font size
       this.updateTextOnResize();
     }
@@ -86,151 +168,147 @@ class Menu extends Phaser.Scene {
     update() {}
   
   }
-  
-//  ------------------------------------------------------------------------------------------------------------
-//  ------------------------------------------------------------------------------------------------------------
 
-class TestLevel extends Phaser.Scene {
+//  ------------------------------------------------------------------------------------------------------------
+//  -------------------------------------------------- LevelOne -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+class LevelOne extends ConfigureScene {
     constructor() {
-        super('TestLevel');
-        this.platform = null;
-        this.player = null;
-    }
-    preload(){
-
+        super('LevelOne');
     }
     create() {
-        // Reset input state
-        // this.input.keyboard.resetKeys();
-        // this.input.mouse.releasePointerLock();
+        // Create variables to track number of trash picked up
+        console.log("Trash picked up by Nova ",this.touchedTrashCount);
 
+        // Create variable track number of trash needed to be cleaned to go to next level
+        this.trashCount = 1;
+        console.log("Trash needed to be picked up for this level",this.trashCount);
 
-        this.cameras.main.setBackgroundColor('#808080');
+        // setting our background image
+        const earthBack = this.add.image(0, 0, 'earth').setOrigin(0, 0);
 
         // Create the platform
         const platform = new Platform(this, 600, this.scale.height - 100, 200, 20, '#000000');
-        
         const platform2 = new Platform(this, 200, this.scale.height - 200, 200, 20, '#000000');
-
         const platform3 = new Platform(this, 600, this.scale.height - 350, 200, 20, '#000000');
-
         const platform4 = new Platform(this, 600, this.scale.height - 600, 200, 20, '#000000');
-     
         const platform5 = new Platform(this, 200, this.scale.height - 450, 200, 20, '#000000');
-
-        const portal = this.add.rectangle(600, 250, 100, 200,);
-        portal.setStrokeStyle(4, 0x000f00);
-        portal.setFillStyle(0x000f00); //
-
-        // physics
-        this.physics.world.enable(portal);
-        this.physics.add.existing(portal);
-        portal.body.setAllowGravity(false);
-        portal.body.setImmovable(true);
+       
+        // Create the trash group
+        this.trashGroup = this.physics.add.group();
+        const trash1 = this.createTrash(600,600,'trash',this.trashGroup);
         
-        
-        this.character = this.add.sprite(100, 100, 'player');
-        this.character.setScale(0.5);
+
+  
+        // Create the portal
+        this.portal = this.add.sprite(200, 200, 'portal');
         this.anims.create({
-            key: 'player',
-            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 7 }),
+            key: 'portal',
+            frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 29 }),
             frameRate: 12,
             repeat: -1
-        })
-        this.character.anims.play('player', true);
+        });
+        // play the portal animation and set physics
+        this.portal.anims.play('portal', true);
+        this.physics.world.enable(this.portal);
+        this.physics.add.existing(this.portal);
+        this.portal.body.setSize(70,120);
+        this.portal.body.setAllowGravity(false);
+        this.portal.body.setImmovable(true);
 
+      
+
+
+        // Create the player
         const nova = new PlayerChar(this, 10, this.scale.height -100, 'player', 0)
         nova.setScale(0.5);
-        // nova.setOrigin(0.5, 1);
-
-        const standStill = this.add.image(100, 100, 'standingFrame', 0);
-
         // Set up physics for the player
         this.physics.world.enable(nova); // Enable physics for the player sprite
         nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform
         nova.body.setFriction(1); // Adjust friction as needed for smooth movement
 
-
-        // collision detection
+        // collision detection for player
         this.physics.add.collider(nova,platform);
         this.physics.add.collider(nova,platform2);
         this.physics.add.collider(nova,platform3);
         this.physics.add.collider(nova,platform4);
         this.physics.add.collider(nova,platform5);
-     
-        this.physics.add.collider(nova,portal,this.goNext,null,this);
+
+        // collision detection for portal
+        this.physics.add.collider(nova, this.portal, this.goNext.bind(this, 'LevelTwo'), null, this);
+        // collision detection for trash
+        this.physics.add.collider(nova,this.trashGroup,this.trashTouched);
+
+
+        // Create the input controls
         this.inputControls = new InputControls(this, nova);
-
-
     }
     update() {
         this.inputControls.update();
     }
-    goNext(){
-        this.scene.start('Testlevel2');
-    }
+    
 }
+// ------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------- LevelTwo -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
 
-//  ------------------------------------------------------------------------------------------------------------
-//  ------------------------------------------------------------------------------------------------------------
-class Testlevel2 extends Phaser.Scene {
+class LevelTwo extends ConfigureScene {
   constructor() {
-    super('Testlevel2');
+    super('LevelTwo');
   }
   create(){
+    // Background image
+    this.add.image(0, 0, 'mars').setOrigin(0, 0);
     this.add.text(100, 100, 'Test Level 2');
+    const next = this.add.text(100, 200, 'Next Level ->');
+    next.setInteractive();
+    next.on('pointerdown', () => {
+      this.scene.start('LevelThree');
+    });
   }
   update(){}
 }
 
+// ------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------- LevelThree -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
 
-
-
-// Load the font in the main game scene's preload method
-class MainGame extends Phaser.Scene {
+class LevelThree extends Phaser.Scene {
   constructor() {
-    super('MainGame');
+    super('LevelThree');
   }
-  preload() {
-    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
-    this.load.spritesheet('player', 'Assets/player.png', { frameWidth: 250, frameHeight: 360, endFrame: 8 });
-    this.load.image('standingFrame', 'Assets/idle1.png');
-
+  create(){
+    // Background image
+    this.add.image(0, 0, 'ice').setOrigin(0, 0);
+    this.add.text(100, 100, 'Test Level 3');
   }
-  create() {
-    WebFont.load({
-      google: {
-        families: ['Rubik Puddles'],
-      },
-      active: () => {
-        game.scene.start('Menu');
-      },
-    });
-  }
+  update(){}
 }
 
+// ------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------- GameConfig -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
 const config = {
-    type: Phaser.AUTO,
-    scale: {
-      mode: Phaser.Scale.RESIZE,
-      width: '100%',
-      height: '100%',
-      parent: 'game-container',
+  type: Phaser.AUTO,
+  scale: {
+    mode: Phaser.Scale.RESIZE,
+    width: '100%',
+    height: '100%',
+    parent: 'game-container',
+  },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 10 },
+      debug: true,
     },
-    physics: {
-      default: 'arcade',
-      arcade: {
-        gravity: { y: 10 },
-        debug: true, // false
-      },
-    },
-    input: {
-      keyboard: true,
-      touch: true,
-    },
-    scene: [Menu,TestLevel,Testlevel2],
-  };
+  },
+  input: {
+    keyboard: true,
+    touch: true,
+  },
+  scene: [ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree],
+};
 
 const game = new Phaser.Game(config);
-// Add main game to our scenes true is to acitvate the scene which sets our font and starts the game
-game.scene.add('MainGame', MainGame, true);

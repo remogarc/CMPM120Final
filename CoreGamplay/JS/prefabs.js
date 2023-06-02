@@ -160,5 +160,20 @@ export class Platform extends Phaser.GameObjects.Rectangle {
         this.body.setCollideWorldBounds(true);
     }
   }
+
+// Trash prefab
+// PhaserGameObjects.Sprite is the base class for all game objects
+export class Trash extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y, texture) {
+        super(scene, x, y, texture);
+        // assigning texture
+        this.setTexture(texture);
+        // Add this game object to the owner scene.
+        scene.add.existing(this);
+    }
+}
+
+
+
   
   
