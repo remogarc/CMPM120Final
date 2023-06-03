@@ -56,7 +56,7 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         // Add this game object to the owner scene
         this.scene = scene;
 
-        //  Get the width and height of the game object. to scale the sprite
+        //  Get the width and height of the game object. to scale the sprite size and hitbox as well as physics
         this.scene.width = this.scene.scale.width;
         this.scene.height = this.scene.scale.height;
 
@@ -74,21 +74,32 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         // Set initial direction of player facing right
         this.direction = 'right';
         this.setFlipX(true);
-        // change hitbox size
-        this.body.setSize(this.scene.width * .25, this.scene.height *.8);
-        // change display size sprite
-        this.setDisplaySize(this.scene.width *.1, this.scene.height *.2);
+
+        // Define the ratio or fixed values for hitbox and sprite sizes
+        const hitboxWidthRatio = 0.12;
+        const hitboxHeightRatio = 0.35;
+        const spriteWidthRatio = 0.05;
+        const spriteHeightRatio = 0.1;
 
 
+        // // change hitbox size
+        // this.body.setSize(this.scene.width * .12, this.scene.height *.3);
+        // // change display size sprite
+        // this.setDisplaySize(this.scene.width *.05, this.scene.height *.1);
+
+
+        this.body.setSize(this.scene.width * hitboxWidthRatio, this.scene.height * hitboxHeightRatio);
+        this.setDisplaySize(this.scene.width * spriteWidthRatio, this.scene.height * spriteHeightRatio);
     }
     moveLeft() {
-        this.body.velocity.x = -200;
+        const velocityX = -200 * (this.scene.width *.001);
+        this.body.velocity.x = velocityX;
         this.setDirection('left');
         this.playAnimation();
         this.setFlipX(false); // Flip the sprite to face left
     }
     moveRight() {
-        this.body.velocity.x = 200;
+        this.body.velocity.x = 200 *  (this.scene.width *.001);
         this.setDirection('right');
         this.playAnimation();
         this.setFlipX(true); // Flip the sprite to face right
@@ -145,13 +156,13 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         //  Enable physics for this game object.
         this.scene.physics.world.enable(this);
         // Set physics properties
-        this.body.setCollideWorldBounds(true);
+        this.body.setCollideWorldBounds(false);
+        //properites for gravity and velocity
         this.body.gravity.y = 200;
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
-        this.jumpVelocity = -250;
+        this.jumpVelocity = -200
     }
-     
 }
 
 // Platform prefab
@@ -163,10 +174,12 @@ export class Platform extends Phaser.GameObjects.Rectangle {
         // Add this game object to the owner scene.
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        // Enable physics for the platform
+        scene.physics.world.enable(this);
         // Set physics properties
         this.body.setImmovable(true);
         this.body.setAllowGravity(false);
-        this.body.setCollideWorldBounds(true);
+        this.body.setCollideWorldBounds(false);
     }
   }
 

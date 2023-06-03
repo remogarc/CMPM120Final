@@ -115,38 +115,35 @@ class Menu extends Phaser.Scene {
       this.resizeListener = null;
       this.isResizing = true;
       this.isPortrait = false;
-
     }
     create() {
       this.cameras.main.setBackgroundColor('#000f00');
-      // Add orientationchange event listener 
-      // lets try resize
+      // Add resize event listener 
       window.addEventListener('resize',this.handleOrientationChange.bind(this));
-     
+      // center of the screen
       const centerX = this.cameras.main.width / 2;
       const centerY = this.cameras.main.height / 2;
-  
+      // font for menu text
       const fontProperties = {
         fontFamily: 'Rubik Puddles',
         align: 'center',
       };
-  
+      // game text
       this.gameText = this.add.text(centerX, centerY, 'Cosmic Cleanup', fontProperties);
       this.gameText.setOrigin(0.5,2);
       this.gameText.setColor('#ffffff');
-
+      // start text
       this.startText = this.add.text(centerX, centerY, 'Tap to start', fontProperties);
       this.startText.setColor('#ffffff');
       this.startText.setOrigin(0.5);
-  
       this.startText.setInteractive();
-  
+      // To start the game
       this.startText.on('pointerdown', () => {
         this.isResizing = false; // Stop resizing
         this.shutdown();
         this.scene.start('LevelOne');
       }, this);
-
+      // Blinking start text
       this.tweens.add({
         targets: this.startText,
         alpha: 0,
@@ -155,29 +152,22 @@ class Menu extends Phaser.Scene {
         yoyo: true,
         repeat: -1,
       });
-
       // Orientation text to indicate player to rotate device on smaller screens when on portrait mode
       this.orientationText = this.add.text(centerX, centerY + 100, 'Please rotate your device', fontProperties);
       this.orientationText.setColor('#ffffff');
       this.orientationText.setOrigin(0.5,2);
-
       // Hide orientation text initially
       this.orientationText.visible = false;
-
       this.orientationText2 = this.add.text(centerX, centerY, 'Then refresh the page', fontProperties);
       this.orientationText2.setColor('#ffffff');
       this.orientationText2.setOrigin(0.5);
-
       // Hide orientation text initially
       this.orientationText2.visible = false;
-
       this.orientationText3 = this.add.text(centerX, centerY, 'Enjoy', fontProperties);
       this.orientationText3.setColor('#ffffff');
       this.orientationText3.setOrigin(0.5,-2);
-
       // Hide orientation text initially
       this.orientationText3.visible = false;
-
       // Check initial orientation
       this.checkOrientation();
       // check for resizng of the game and update text accordingly
@@ -188,7 +178,6 @@ class Menu extends Phaser.Scene {
       // Initial resize call to set the correct font size, and check orientation
       this.updateTextOnResize();
     }
-
     handleOrientationChange(){
       setTimeout(() => {
         // check orientation
@@ -218,7 +207,6 @@ class Menu extends Phaser.Scene {
       // update isPortrait flag
       this.isPortrait = isPortrait;
     }
-
     updateTextOnResize() {
       if (!this.isResizing) {
         return;
@@ -230,45 +218,32 @@ class Menu extends Phaser.Scene {
       this.orientationText.setFontSize(fontSize);
       this.orientationText2.setFontSize(fontSize);
       this.orientationText3.setFontSize(fontSize);
-
       // Get rotated width and height of canvas
       const rotatedWidth = this.cameras.main.width;
       const rotatedHeight = this.cameras.main.height;
-
       const centerX = rotatedWidth / 2;
       const centerY = rotatedHeight / 2;
-
       // Rotate the canvas back to its original position
       this.cameras.main.setRotation(0);
-
       // Adjust orientation text position based on available height
       const orientationTextY = centerY;
       this.orientationText.setPosition(centerX, orientationTextY);
-
       // Rotate the canvas based on the device orientation
       const { screen } = window;
       const isLandscape = screen.orientation.angle === 90 || screen.orientation.angle === -90;
       const rotationAngle = isLandscape ? 90 : 0;
       this.cameras.main.setRotation(rotationAngle * Math.PI / 180);
-
       // Rotate the game and start text based on the device orientation
       this.gameText.setRotation(rotationAngle * Math.PI / -180);
       this.startText.setRotation(rotationAngle * Math.PI / -180);
-
     }
-  
     shutdown() {
       this.scale.off('resize', this.resizeListener);
     }
-  
   }
 
 //  ------------------------------------------------------------------------------------------------------------
 //  -------------------------------------------------- LevelOne -----------------------------------------------------
-// TO DO - 06/04/2021 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// move the floating platform
-// scale the physics of player when moving left right or jumping accordingngly to match device consitency
-// DONE
 // ------------------------------------------------------------------------------------------------------------
 
 class LevelOne extends ConfigureScene {
@@ -276,28 +251,24 @@ class LevelOne extends ConfigureScene {
         super('LevelOne');
     }
     create() {
+        // The game width and height to set our assets to scale to the size of the game
+        // IMPORTANT -----------------------------------------------------------------------------------------------
+        const gameWidth = this.scale.width;
+        const gameHeight = this.scale.height;
         // Create variables to track number of trash picked up
         console.log("Trash picked up by Nova ",this.touchedTrashCount);
         console.log("Trash needed to be picked up for this level",this.trashCount);
-
         // Create the background
         const background = this.add.sprite(0, 0, 'earth');
         background.setOrigin(0, 0);
         // Resize the background image to fit the width and height of the game
         const resizeBackground = () => {
-          background.setScale(this.scale.width/background.width, this.scale.height/background.height);
+          background.setScale(gameWidth/background.width, gameHeight/background.height);
         }
         window.addEventListener('resize', resizeBackground);
         resizeBackground();
-       
         // Create the platform
         // (scene, x, y, width, height, color) - param to pass for platform
-
-        // The game width and height to set our assets to scale to the size of the game
-        // IMPORTANT -----------------------------------------------------------------------------------------------
-        const gameWidth = this.scale.width;
-        const gameHeight = this.scale.height;
-
         // Three main platforms for the game 
         const platform = new Platform(this, gameWidth * 0.1,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.2, 0x696969);
         const platform2 = new Platform(this,gameWidth * 0.5,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.2, 0x696969);
@@ -305,19 +276,13 @@ class LevelOne extends ConfigureScene {
         // Stacked platform and one in air
         const platform4 = new Platform(this,gameWidth * 0.54,this.scale.height * 0.72, gameWidth * 0.12, this.scale.height * 0.16, 0x696969);
         const platform5 = new Platform(this,gameWidth * 0.3,this.scale.height * 0.5, gameWidth * 0.2, this.scale.height * 0.05, 0x696969);
-       
-
         // Create variable track number of trash needed to be cleaned to go to next level
         this.trashCount = 3;
-
         // Create the trash group
         this.trashGroup = this.physics.add.group();
         const trash1 = this.createTrash(gameWidth * .45,gameHeight * .74,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
         const trash2 = this.createTrash(gameWidth * .57,gameHeight * .6,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
         const trash3 = this.createTrash(gameWidth * .22,gameHeight * .44,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
-        
-
-  
         // Create the portal
         this.portal = this.add.sprite(gameWidth * .97, gameHeight * 0.4, 'portal');
         this.anims.create({
@@ -333,41 +298,35 @@ class LevelOne extends ConfigureScene {
         this.portal.body.setSize(70,120);
         this.portal.body.setAllowGravity(false);
         this.portal.body.setImmovable(true);
-
-      
-
-
         // Create the player
-        const nova = new PlayerChar(this, gameWidth * 0.06, gameHeight * .63, 'player', 0)
-        // nova.setScale(0.5);
-
-        // nova.setDisplaySize(gameWidth * 0.1, gameHeight * 0.2);
-        // nova.setSize(gameWidth * 0.1, gameHeight * 0.2);
-
-
+        this.nova = new PlayerChar(this, gameWidth * 0.06, gameHeight * .63, 'player', 0)
         // Set up physics for the player
-        this.physics.world.enable(nova); // Enable physics for the player sprite
-        nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform
-        nova.body.setFriction(1); // Adjust friction as needed for smooth movement
-
+        this.physics.world.enable(this.nova); // Enable physics for the player sprite
+        this.nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform
+        this.nova.body.setFriction(1); // Adjust friction as needed for smooth movement
         // collision detection for player
-        this.physics.add.collider(nova,platform);
-        this.physics.add.collider(nova,platform2);
-        this.physics.add.collider(nova,platform3);
-        this.physics.add.collider(nova,platform4);
-        this.physics.add.collider(nova,platform5);
-
+        this.physics.add.collider(this.nova,platform);
+        this.physics.add.collider(this.nova,platform2);
+        this.physics.add.collider(this.nova,platform3);
+        this.physics.add.collider(this.nova,platform4);
+        this.physics.add.collider(this.nova,platform5);
         // collision detection for portal
-        this.physics.add.collider(nova, this.portal, this.goNext.bind(this, 'LevelTwo'), null, this);
+        this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'LevelTwo'), null, this);
         // collision detection for trash
-        this.physics.add.collider(nova,this.trashGroup,this.trashTouched);
-
-
+        this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
         // Create the input controls
-        this.inputControls = new InputControls(this, nova);
+        this.inputControls = new InputControls(this, this.nova);
     }
     update() {
+      // update input controls and player movement if they are out of bounds
         this.inputControls.update();
+        if (this.nova.x < 0 ||this.nova.y > this.scale.height) {
+          // Reset touching trash
+          this.touchedTrashCount = 0;
+          console.log("Trash picked up by Nova ",this.touchedTrashCount);
+          // Restart the scene.
+          this.scene.restart();
+        } 
     }
     
 }
@@ -423,7 +382,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 10 },
-      debug: true,
+      debug: false,
     },
   },
   input: {
