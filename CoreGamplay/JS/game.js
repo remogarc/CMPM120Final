@@ -20,13 +20,10 @@ console.log('game.js loaded');
 // Level3 - create the third level scene
 // config - configure the game settings
 
-
-
 // -----------------------------------------------------------------------------------------------------------------------
 // Flow of the game
 // MENU - > Cinematic -> Level1 -> Cinematic -> Level2 -> Cinematic -> Level3 -> Cinematic -> End/ Credits
 // -----------------------------------------------------------------------------------------------------------------------
-
 
 //  -----------------------------------------------------------------------------------------------------------------------
 //  -------------------------------------------------- ConfigureScene -----------------------------------------------------
@@ -68,9 +65,9 @@ class ConfigureScene extends Phaser.Scene {
     });
   }
   // Create the trash objects
-  createTrash(x,y,texture,group){
-    const trash = new Trash(this, x, y,texture);
-    trash.setScale(2);
+  createTrash(x,y,texture,group,width,height){
+    const trash = new Trash(this, x, y,texture,width,height);
+    trash.setDisplaySize(width,height);
     group.add(trash);
     // Enable physics for each trash object
     this.physics.world.enable(trash);
@@ -167,7 +164,6 @@ class Menu extends Phaser.Scene {
       // Hide orientation text initially
       this.orientationText.visible = false;
 
-
       this.orientationText2 = this.add.text(centerX, centerY, 'Then refresh the page', fontProperties);
       this.orientationText2.setColor('#ffffff');
       this.orientationText2.setOrigin(0.5);
@@ -175,16 +171,12 @@ class Menu extends Phaser.Scene {
       // Hide orientation text initially
       this.orientationText2.visible = false;
 
-
       this.orientationText3 = this.add.text(centerX, centerY, 'Enjoy', fontProperties);
       this.orientationText3.setColor('#ffffff');
       this.orientationText3.setOrigin(0.5,-2);
 
       // Hide orientation text initially
       this.orientationText3.visible = false;
-
-
-
 
       // Check initial orientation
       this.checkOrientation();
@@ -273,6 +265,10 @@ class Menu extends Phaser.Scene {
 
 //  ------------------------------------------------------------------------------------------------------------
 //  -------------------------------------------------- LevelOne -----------------------------------------------------
+// TO DO - 06/04/2021 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// move the floating platform
+// scale the physics of player when moving left right or jumping accordingngly to match device consitency
+// DONE
 // ------------------------------------------------------------------------------------------------------------
 
 class LevelOne extends ConfigureScene {
@@ -282,31 +278,48 @@ class LevelOne extends ConfigureScene {
     create() {
         // Create variables to track number of trash picked up
         console.log("Trash picked up by Nova ",this.touchedTrashCount);
+        console.log("Trash needed to be picked up for this level",this.trashCount);
+
+        // Create the background
+        const background = this.add.sprite(0, 0, 'earth');
+        background.setOrigin(0, 0);
+        // Resize the background image to fit the width and height of the game
+        const resizeBackground = () => {
+          background.setScale(this.scale.width/background.width, this.scale.height/background.height);
+        }
+        window.addEventListener('resize', resizeBackground);
+        resizeBackground();
+       
+        // Create the platform
+        // (scene, x, y, width, height, color) - param to pass for platform
+
+        // The game width and height to set our assets to scale to the size of the game
+        // IMPORTANT -----------------------------------------------------------------------------------------------
+        const gameWidth = this.scale.width;
+        const gameHeight = this.scale.height;
+
+        // Three main platforms for the game 
+        const platform = new Platform(this, gameWidth * 0.1,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.2, 0x696969);
+        const platform2 = new Platform(this,gameWidth * 0.5,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.2, 0x696969);
+        const platform3 = new Platform(this,gameWidth * 0.9,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.5, 0x696969);
+        // Stacked platform and one in air
+        const platform4 = new Platform(this,gameWidth * 0.54,this.scale.height * 0.72, gameWidth * 0.12, this.scale.height * 0.16, 0x696969);
+        const platform5 = new Platform(this,gameWidth * 0.3,this.scale.height * 0.5, gameWidth * 0.2, this.scale.height * 0.05, 0x696969);
+       
 
         // Create variable track number of trash needed to be cleaned to go to next level
         this.trashCount = 3;
-        console.log("Trash needed to be picked up for this level",this.trashCount);
 
-        // setting our background image
-        const earthBack = this.add.image(0, 0, 'earth').setOrigin(0, 0);
-
-        // Create the platform
-        const platform = new Platform(this, 600, this.scale.height - 100, 200, 20, 0xffffff);
-        const platform2 = new Platform(this, 200, this.scale.height - 200, 200, 20, 0x00f000);
-        const platform3 = new Platform(this, 600, this.scale.height - 350, 200, 20, 0xf00000);
-        const platform4 = new Platform(this, 600, this.scale.height - 600, 200, 20, 0x00000f);
-        const platform5 = new Platform(this, 200, this.scale.height - 450, 200, 20, 0x00f000);
-       
         // Create the trash group
         this.trashGroup = this.physics.add.group();
-        const trash1 = this.createTrash(600,600,'trash',this.trashGroup);
-        const trash2 = this.createTrash(600,400,'trash',this.trashGroup);
-        const trash3 = this.createTrash(600,200,'trash',this.trashGroup);
+        const trash1 = this.createTrash(gameWidth * .45,gameHeight * .74,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
+        const trash2 = this.createTrash(gameWidth * .57,gameHeight * .6,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
+        const trash3 = this.createTrash(gameWidth * .22,gameHeight * .44,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
         
 
   
         // Create the portal
-        this.portal = this.add.sprite(200, 200, 'portal');
+        this.portal = this.add.sprite(gameWidth * .97, gameHeight * 0.4, 'portal');
         this.anims.create({
             key: 'portal',
             frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 29 }),
@@ -325,8 +338,13 @@ class LevelOne extends ConfigureScene {
 
 
         // Create the player
-        const nova = new PlayerChar(this, 10, this.scale.height -100, 'player', 0)
-        nova.setScale(0.5);
+        const nova = new PlayerChar(this, gameWidth * 0.06, gameHeight * .63, 'player', 0)
+        // nova.setScale(0.5);
+
+        // nova.setDisplaySize(gameWidth * 0.1, gameHeight * 0.2);
+        // nova.setSize(gameWidth * 0.1, gameHeight * 0.2);
+
+
         // Set up physics for the player
         this.physics.world.enable(nova); // Enable physics for the player sprite
         nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform

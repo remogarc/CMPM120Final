@@ -55,6 +55,11 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         super(scene,x,y,texture,frame);
         // Add this game object to the owner scene
         this.scene = scene;
+
+        //  Get the width and height of the game object. to scale the sprite
+        this.scene.width = this.scene.scale.width;
+        this.scene.height = this.scene.scale.height;
+
         //  Add this game object to the owner scene.
         this.scene.add.existing(this);
         // Enable physics for this game object
@@ -70,7 +75,11 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         this.direction = 'right';
         this.setFlipX(true);
         // change hitbox size
-        this.body.setSize(220, 320);
+        this.body.setSize(this.scene.width * .25, this.scene.height *.8);
+        // change display size sprite
+        this.setDisplaySize(this.scene.width *.1, this.scene.height *.2);
+
+
     }
     moveLeft() {
         this.body.velocity.x = -200;
@@ -164,8 +173,8 @@ export class Platform extends Phaser.GameObjects.Rectangle {
 // Trash prefab
 // PhaserGameObjects.Sprite is the base class for all game objects
 export class Trash extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture) {
-        super(scene, x, y, texture);
+    constructor(scene, x, y, texture,width,height) {
+        super(scene, x, y, texture,width,height);
         // assigning texture
         this.setTexture(texture);
         // Add this game object to the owner scene.
