@@ -162,10 +162,30 @@ class Menu extends Phaser.Scene {
       // Orientation text to indicate player to rotate device on smaller screens when on portrait mode
       this.orientationText = this.add.text(centerX, centerY + 100, 'Please rotate your device', fontProperties);
       this.orientationText.setColor('#ffffff');
-      this.orientationText.setOrigin(0.5);
+      this.orientationText.setOrigin(0.5,2);
 
       // Hide orientation text initially
       this.orientationText.visible = false;
+
+
+      this.orientationText2 = this.add.text(centerX, centerY, 'Then refresh the page', fontProperties);
+      this.orientationText2.setColor('#ffffff');
+      this.orientationText2.setOrigin(0.5);
+
+      // Hide orientation text initially
+      this.orientationText2.visible = false;
+
+
+      this.orientationText3 = this.add.text(centerX, centerY, 'Enjoy', fontProperties);
+      this.orientationText3.setColor('#ffffff');
+      this.orientationText3.setOrigin(0.5,-2);
+
+      // Hide orientation text initially
+      this.orientationText3.visible = false;
+
+
+
+
       // Check initial orientation
       this.checkOrientation();
       // check for resizng of the game and update text accordingly
@@ -189,12 +209,16 @@ class Menu extends Phaser.Scene {
       if (isPortrait && !this.isPortrait) {
         // If in portrait mode, show orientation text and hide our game text
         this.orientationText.visible = true;
+        this.orientationText2.visible = true;
+        this.orientationText3.visible = true;
         this.gameText.visible = false;
         this.startText.visible = false;
         console.log('Please rotate your device');
       } else if (!isPortrait && this.isPortrait){
         // If in landscape mode, hide orientation text and show our game text
         this.orientationText.visible = false;
+        this.orientationText2.visible = false;
+        this.orientationText3.visible = false;
         this.gameText.visible = true;
         this.startText.visible = true;
         console.log('Landscape mode');
@@ -212,6 +236,8 @@ class Menu extends Phaser.Scene {
       this.gameText.setFontSize(fontSize);
       this.startText.setFontSize(fontSize);
       this.orientationText.setFontSize(fontSize);
+      this.orientationText2.setFontSize(fontSize);
+      this.orientationText3.setFontSize(fontSize);
 
       // Get rotated width and height of canvas
       const rotatedWidth = this.cameras.main.width;
