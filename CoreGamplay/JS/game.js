@@ -133,7 +133,6 @@ class Menu extends Phaser.Scene {
         fontFamily: 'Rubik Puddles',
         align: 'center',
       };
-
   
       this.gameText = this.add.text(centerX, centerY, 'Cosmic Cleanup', fontProperties);
       this.gameText.setOrigin(0.5,2);
@@ -223,17 +222,6 @@ class Menu extends Phaser.Scene {
 
       // Rotate the canvas back to its original position
       this.cameras.main.setRotation(0);
-
-      // Update the text position
-      // this.gameText.setPosition(centerX-50, centerY);
-      // this.startText.setPosition(centerX, centerY);
-
-
-      // Update the text position
-      // this.gameText.setPosition(centerX, centerY);
-      // this.startText.setPosition(centerX, centerY);
-
-  
 
       // Adjust orientation text position based on available height
       const orientationTextY = centerY;
