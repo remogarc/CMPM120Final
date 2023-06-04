@@ -541,7 +541,7 @@ const config = {
     keyboard: true,
     touch: true,
   },
-  scene: [LevelThree],
+  scene: [ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree],
   // ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree
 };
 
