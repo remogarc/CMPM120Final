@@ -90,6 +90,7 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
 
         this.body.setSize(this.scene.width * hitboxWidthRatio, this.scene.height * hitboxHeightRatio);
         this.setDisplaySize(this.scene.width * spriteWidthRatio, this.scene.height * spriteHeightRatio);
+
     }
     moveLeft() {
         const velocityX = -200 * (this.scene.width *.001);
@@ -106,8 +107,11 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
     }
     jump() {
         if (this.body.onFloor()) {
-            this.body.velocity.y = this.jumpVelocity;
-            // this.showMessage('Jump')
+            if (this.scene.height < 900){
+                this.body.velocity.y = -80 * (this.scene.height * .006);
+            } else {
+                this.body.velocity.y = -80 * (this.scene.height * .004);
+            }
         }
     }
     stop() {
@@ -162,7 +166,6 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         this.body.gravity.y = 200;
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
-        this.jumpVelocity = -200
     }
 }
 

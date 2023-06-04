@@ -307,7 +307,7 @@ class LevelOne extends ConfigureScene {
         this.trashGroup = this.physics.add.group();
         const trash1 = this.createTrash(gameWidth * .46,gameHeight * .77,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
         const trash2 = this.createTrash(gameWidth * .57,gameHeight * .62,'trash',this.trashGroup,gameWidth *.04,gameHeight * .1);
-        const trash3 = this.createTrash(gameWidth * .22,gameHeight * .44,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
+        const trash3 = this.createTrash(gameWidth * .25,gameHeight * .44,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
         // Create the portal
         this.portal = this.add.sprite(gameWidth * .98, gameHeight * 0.6, 'portal');
         this.anims.create({
@@ -347,7 +347,7 @@ class LevelOne extends ConfigureScene {
     update() {
       // update input controls and player movement if they are out of bounds
         this.inputControls.update();
-        if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
+        if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width || this.nova.y < 0) {
           // Reset touching trash
           this.touchedTrashCount = 0;
           console.log("Trash picked up by Nova ",this.touchedTrashCount);
