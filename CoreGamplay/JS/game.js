@@ -53,6 +53,8 @@ class ConfigureScene extends Phaser.Scene {
     this.load.image('ice', 'Assets/ice.png');
     // portal
     this.load.spritesheet('portal', 'Assets/portal.png', { frameWidth: 150, frameHeight: 175, endFrame: 30 });
+    // Sound when the player picks up trash
+    this.load.audio('trashPickup','Assets/trash_picked.mp3');
   }
   create(){
     WebFont.load({
@@ -76,6 +78,11 @@ class ConfigureScene extends Phaser.Scene {
     trash.body.setCollideWorldBounds(true); // Prevent the trash object from moving outside the world bounds
   }
   trashTouched = (nova,trash) => {
+    // play trash pickup sound also making it little louder
+    const trashPickupSound = this.sound.add('trashPickup');
+    trashPickupSound.volume = 2;
+    trashPickupSound.play();
+    // increment the trash count
     this.touchedTrashCount++;
     console.log('Trash picked up by Nova', this.touchedTrashCount);
     trash.destroy();
@@ -255,6 +262,9 @@ class LevelOne extends ConfigureScene {
         // IMPORTANT -----------------------------------------------------------------------------------------------
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
+
+        // add our sound that will play when the player picks up trash
+        // this.trashPickupSound = this.sound.add('trashPickup');
         // Create variables to track number of trash picked up
         console.log("Trash picked up by Nova ",this.touchedTrashCount);
         console.log("Trash needed to be picked up for this level",this.trashCount);
