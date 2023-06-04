@@ -7,8 +7,8 @@ console.log('game.js loaded');
 // -----------------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------TO DO LIST--------------------------------------------------
 // Mobile controls ?
-// Add more levels / design levels
-// resize method for each level for mobile
+// Level 2 and 3
+// Cinematics and background music
 // ----------------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------CODE BREAKDOWN------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
@@ -278,8 +278,7 @@ class LevelOne extends ConfigureScene {
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
 
-        // add our sound that will play when the player picks up trash
-        // this.trashPickupSound = this.sound.add('trashPickup');
+       
         // Create variables to track number of trash picked up
         console.log("Trash picked up by Nova ",this.touchedTrashCount);
         console.log("Trash needed to be picked up for this level",this.trashCount);
@@ -366,30 +365,156 @@ class LevelTwo extends ConfigureScene {
     super('LevelTwo');
   }
   create(){
-    // Background image
-    this.add.image(0, 0, 'mars').setOrigin(0, 0);
-    this.add.text(100, 100, 'Test Level 2');
-    const next = this.add.text(100, 200, 'Next Level ->');
-    next.setInteractive();
-    next.on('pointerdown', () => {
-      this.scene.start('LevelThree');
-    });
+      // The game width and height to set our assets to scale to the size of the game
+      // IMPORTANT -----------------------------------------------------------------------------------------------
+      const gameWidth = this.scale.width;
+      const gameHeight = this.scale.height;
+
+      // Create variables to track number of trash picked up
+      console.log("Trash picked up by Nova ",this.touchedTrashCount);
+      console.log("Trash needed to be picked up for this level",this.trashCount);
+
+      // Create the background
+      const background = this.add.sprite(0, 0, 'mars');
+      background.setOrigin(0, 0);
+      // Resize the background image to fit the width and height of the game
+      const resizeBackground = () => {
+        background.setScale(gameWidth/background.width, gameHeight/background.height);
+      }
+      window.addEventListener('resize', resizeBackground);
+      resizeBackground();
+
+      // add platforms
+      const platform = new Platform(this,gameWidth * .05,gameHeight * .73, gameWidth * 0.1, gameHeight * 0.5, 0xD2B48C);
+
+      const platform2 = new Platform(this,gameWidth * .2,gameHeight * .83, gameWidth * 0.2, gameHeight * 0.3, 0xD2B48C);
+
+      const platform3 = new Platform(this,gameWidth * .4,gameHeight * .4, gameWidth * 0.2, gameHeight * 0.05, 0xD2B48C);
+
+      const platform4 = new Platform(this,gameWidth * .6,gameHeight * .9, gameWidth * 0.2, gameHeight * 0.3, 0xD2B48C);
+
+      const platform5 = new Platform(this,gameWidth * .9,gameHeight * .2, gameWidth * 0.2, gameHeight * 0.05, 0xD2B48C);
+
+      const platform6 = new Platform(this,gameWidth * .7,gameHeight * .5, gameWidth * 0.15, gameHeight * 0.05, 0xD2B48C);
+      platform6.body.setImmovable(true);
+
+      // Set platform's initial position and movement range
+      const startY = platform6.y;
+      const endY = platform6.y - 50; // Adjust this value to control the movement range
+
+      // Move platform
+      this.tweens.add({
+        targets: platform6,
+        y: { from: startY, to: endY, duration: 1000, ease: 'Linear' },
+        repeat: -1,
+        yoyo: true
+      });
+
+      const platform7 = new Platform(this,gameWidth * .9,gameHeight * .9, gameWidth * 0.1, gameHeight * 0.05, 0xD2B48C);
+
+
+      // add player
+      this.nova = new PlayerChar(this, gameWidth * 0.05, gameHeight * .43, 'player', 0)
+
+      // add trash
+      // Create variable track number of trash needed to be cleaned to go to next level
+      this.trashCount = 3;
+      // Create the trash group
+      this.trashGroup = this.physics.add.group();
+      const trash1 = this.createTrash(gameWidth * .9,gameHeight * .85,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
+      const trash2 = this.createTrash(gameWidth * .15,gameHeight * .64,'trash',this.trashGroup,gameWidth *.04,gameHeight * .1);
+      const trash3 = this.createTrash(gameWidth * .45,gameHeight * .34,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
+      // Create the portal
+      this.portal = this.add.sprite(gameWidth * .98, gameHeight * 0.1, 'portal');
+      this.anims.create({
+          key: 'portal',
+          frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 29 }),
+          frameRate: 12,
+          repeat: -1
+      });
+      // play the portal animation and set physics
+      this.portal.anims.play('portal', true);
+      this.physics.world.enable(this.portal);
+      this.physics.add.existing(this.portal);
+      this.portal.body.setSize(gameWidth * .05, gameHeight * 0.15);
+      this.portal.setDisplaySize(gameWidth * .05, gameHeight * 0.2);
+      this.portal.body.setAllowGravity(false);
+      this.portal.body.setImmovable(true);
+      // Create the player
+      // Set up physics for the player
+      this.physics.world.enable(this.nova); // Enable physics for the player sprite
+      this.nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform
+      this.nova.body.setFriction(1); // Adjust friction as needed for smooth movement
+      // collision detection for player
+      this.physics.add.collider(this.nova,platform);
+      this.physics.add.collider(this.nova,platform2);
+      this.physics.add.collider(this.nova,platform3);
+      this.physics.add.collider(this.nova,platform4);
+      this.physics.add.collider(this.nova,platform5);
+      // collision detection for portal
+      this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'LevelThree'), null, this);
+      // collision detection for trash
+      this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
+
+      // physics
+      this.physics.add.collider(this.nova,platform);
+      this.physics.add.collider(this.nova,platform2);
+      this.physics.add.collider(this.nova,platform3);
+      this.physics.add.collider(this.nova,platform4);
+      this.physics.add.collider(this.nova,platform5);
+      this.physics.add.collider(this.nova,platform6);
+      this.physics.add.collider(this.nova,platform7);
+
+
+      this.inputControls = new InputControls(this, this.nova);
+
   }
-  update(){}
+  update(){
+    this.inputControls.update();
+
+    // restart the scene if the player is out of bounds
+    if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
+      // Reset touching trash
+      this.touchedTrashCount = 0;
+      console.log("Trash picked up by Nova ",this.touchedTrashCount);
+      // Restart the scene.
+      this.scene.restart();
+    }
+
+
+  }
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------- LevelThree -----------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-class LevelThree extends Phaser.Scene {
+class LevelThree extends ConfigureScene {
   constructor() {
     super('LevelThree');
   }
   create(){
-    // Background image
-    this.add.image(0, 0, 'ice').setOrigin(0, 0);
-    this.add.text(100, 100, 'Test Level 3');
+    // The game width and height to set our assets to scale to the size of the game
+    // IMPORTANT -----------------------------------------------------------------------------------------------
+    const gameWidth = this.scale.width;
+    const gameHeight = this.scale.height;
+
+    // Create variables to track number of trash picked up
+    console.log("Trash picked up by Nova ",this.touchedTrashCount);
+    console.log("Trash needed to be picked up for this level",this.trashCount);
+
+    // Create the background
+    const background = this.add.sprite(0, 0, 'ice');
+    background.setOrigin(0, 0);
+    // Resize the background image to fit the width and height of the game
+    const resizeBackground = () => {
+      background.setScale(gameWidth/background.width, gameHeight/background.height);
+    }
+    window.addEventListener('resize', resizeBackground);
+    resizeBackground();
+
+
+
   }
   update(){}
 }
@@ -416,7 +541,8 @@ const config = {
     keyboard: true,
     touch: true,
   },
-  scene: [ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree],
+  scene: [LevelThree],
+  // ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree
 };
 
 const game = new Phaser.Game(config);
