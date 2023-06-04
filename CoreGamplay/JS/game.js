@@ -1,5 +1,5 @@
 // Our prefab.js file is a collection of classes that we can use to create game objects.
-import { InputControls,Platform,PlayerChar,Trash } from './prefabs.js';
+import { InputControls,Platform,PlayerChar,Trash/*,Captions*/ } from './prefabs.js';
 
 // test comment
 console.log('game.js loaded');
@@ -63,7 +63,22 @@ class ConfigureScene extends Phaser.Scene {
         game.scene.start('Menu');
       },
     });
+
+    // // Closed Captioning
+    //   this.messageBox = this.add.text(this.game.config.width * 0.75 + (this.game.config.width * 0.01), this.game.config.height * 0.33)
+    //   .setFontFamily('Impact')
+    //   .setStyle({ fontSize: 200, color: '#fff' })
+    //   .setWordWrapWidth(this.game.config.width * 0.25 - 2 * (this.game.config.width * 0.01));
   }
+  // showMessage(message) {
+  //           this.messageBox.setText(message);
+  //           this.tweens.add({
+  //               targets: this.messageBox,
+  //               alpha: { from: 1, to: 0 },
+  //               easing: 'Quintic.in',
+  //               duration: 10
+  //           });
+  //       }
   // Create the trash objects
   createTrash(x,y,texture,group,width,height){
     const trash = new Trash(this, x, y,texture,width,height);
@@ -317,6 +332,7 @@ class LevelOne extends ConfigureScene {
         this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
         // Create the input controls
         this.inputControls = new InputControls(this, this.nova);
+        // this.showMessage('Jump');
     }
     update() {
       // update input controls and player movement if they are out of bounds

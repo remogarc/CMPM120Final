@@ -107,6 +107,7 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
     jump() {
         if (this.body.onFloor()) {
             this.body.velocity.y = this.jumpVelocity;
+            // this.showMessage('Jump')
         }
     }
     stop() {
@@ -194,6 +195,28 @@ export class Trash extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
     }
 }
+
+// export class Captions extends Phaser.scene {
+//     constructor(scene) {
+//         super(scene);
+//     }
+//     create() {
+//         // Closed Captioning
+//         this.messageBox = this.add.text(this.game.config.width * 0.75 + (this.game.config.width * 0.01), this.game.config.height * 0.33)
+//         .setFontFamily('Impact')
+//         .setStyle({ fontSize: 200, color: '#fff' })
+//         .setWordWrapWidth(this.game.config.width * 0.25 - 2 * (this.game.config.width * 0.01));
+//     }
+//     showMessage(message) {
+//         this.messageBox.setText(message);
+//         this.tweens.add({
+//             targets: this.messageBox,
+//             alpha: { from: 1, to: 0 },
+//             easing: 'Quintic.in',
+//             duration: 10
+//         });
+//     }
+// }
 
 
 
