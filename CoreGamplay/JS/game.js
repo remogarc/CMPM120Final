@@ -274,17 +274,17 @@ class LevelOne extends ConfigureScene {
         const platform2 = new Platform(this,gameWidth * 0.5,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.2, 0x696969);
         const platform3 = new Platform(this,gameWidth * 0.9,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.5, 0x696969);
         // Stacked platform and one in air
-        const platform4 = new Platform(this,gameWidth * 0.54,this.scale.height * 0.72, gameWidth * 0.12, this.scale.height * 0.16, 0x696969);
+        const platform4 = new Platform(this,gameWidth * 0.54,this.scale.height * 0.74, gameWidth * 0.12, this.scale.height * 0.16, 0x696969);
         const platform5 = new Platform(this,gameWidth * 0.3,this.scale.height * 0.5, gameWidth * 0.2, this.scale.height * 0.05, 0x696969);
         // Create variable track number of trash needed to be cleaned to go to next level
         this.trashCount = 3;
         // Create the trash group
         this.trashGroup = this.physics.add.group();
-        const trash1 = this.createTrash(gameWidth * .45,gameHeight * .74,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
-        const trash2 = this.createTrash(gameWidth * .57,gameHeight * .6,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
+        const trash1 = this.createTrash(gameWidth * .46,gameHeight * .77,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
+        const trash2 = this.createTrash(gameWidth * .57,gameHeight * .62,'trash',this.trashGroup,gameWidth *.04,gameHeight * .1);
         const trash3 = this.createTrash(gameWidth * .22,gameHeight * .44,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
         // Create the portal
-        this.portal = this.add.sprite(gameWidth * .97, gameHeight * 0.4, 'portal');
+        this.portal = this.add.sprite(gameWidth * .98, gameHeight * 0.6, 'portal');
         this.anims.create({
             key: 'portal',
             frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 29 }),
@@ -295,7 +295,8 @@ class LevelOne extends ConfigureScene {
         this.portal.anims.play('portal', true);
         this.physics.world.enable(this.portal);
         this.physics.add.existing(this.portal);
-        this.portal.body.setSize(70,120);
+        this.portal.body.setSize(gameWidth * .05, gameHeight * 0.15);
+        this.portal.setDisplaySize(gameWidth * .05, gameHeight * 0.2);
         this.portal.body.setAllowGravity(false);
         this.portal.body.setImmovable(true);
         // Create the player
@@ -320,7 +321,7 @@ class LevelOne extends ConfigureScene {
     update() {
       // update input controls and player movement if they are out of bounds
         this.inputControls.update();
-        if (this.nova.x < 0 ||this.nova.y > this.scale.height) {
+        if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
           // Reset touching trash
           this.touchedTrashCount = 0;
           console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -382,7 +383,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 10 },
-      debug: false,
+      debug: true,
     },
   },
   input: {
