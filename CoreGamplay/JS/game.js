@@ -55,6 +55,9 @@ class ConfigureScene extends Phaser.Scene {
     this.load.spritesheet('portal', 'Assets/portal.png', { frameWidth: 150, frameHeight: 175, endFrame: 30 });
     // Sound when the player picks up trash
     this.load.audio('trashPickup','Assets/trash_picked.mp3');
+    //Sound pngs
+    this.load.image('song', 'Assets/sound.png');
+    this.load.image('check', 'Assets/mute.png');
   }
   create(){
     WebFont.load({
@@ -106,6 +109,20 @@ class ConfigureScene extends Phaser.Scene {
       this.allTrashTouched();
     }
   }
+  // toggleMute(){
+  //   this.song = this.add.image(30,30, 'song');
+  //   //fix postion and scale 
+  //   this.song.setScale(2);
+  //   this.check = this.add.image(30,30,'check');
+  //   //fix position and scale
+  //   this.check.setScale(2);
+  //   this.check.visible = false;
+  //   this.song.setInteractive();
+  //   this.song.on("pointerup", () => {
+  //   this.sound.mute = !this.sound.mute;
+  //   this.check.visible = !this.check.visible;
+  //   });
+  // }
   allTrashTouched(){
     console.log('All trash touched');
   }
