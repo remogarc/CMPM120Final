@@ -36,6 +36,7 @@ class ConfigureScene extends Phaser.Scene {
     this.touchedTrashCount = 0;
     this.trashCount = 0;
     this.nextLevel = 0;
+    this.music = null;
   }
   preload(){
     // Load the font
@@ -58,6 +59,11 @@ class ConfigureScene extends Phaser.Scene {
     //Sound pngs
     this.load.image('song', 'Assets/sound.png');
     this.load.image('check', 'Assets/mute.png');
+
+    // Background music for each of the levels
+    this.load.audio('level1Music','Assets/music1.mp3');
+    this.load.audio('level2Music','Assets/music2.mp3');
+    this.load.audio('level3Music','Assets/music3.mp3');
   }
   create(){
     WebFont.load({
@@ -84,6 +90,8 @@ class ConfigureScene extends Phaser.Scene {
   //               duration: 10
   //           });
   //       }
+
+
   // Create the trash objects
   createTrash(x,y,texture,group,width,height){
     const trash = new Trash(this, x, y,texture,width,height);
@@ -131,6 +139,12 @@ class ConfigureScene extends Phaser.Scene {
     if(this.touchedTrashCount == this.trashCount){
       console.log('All trash picked up good work!');
       console.log('Going to next level', nextlevel);
+      // check if musicis playing
+      if(this.music != null && this.music.isPlaying && this.music){
+        // stop the music for level
+        this.music.stop();
+      }
+      // go to the next level
       this.scene.start(nextlevel);
     } else {
       // if not all trash is picked up, tell the player to pick up all trash
@@ -290,6 +304,11 @@ class LevelOne extends ConfigureScene {
         super('LevelOne');
     }
     create() {
+
+        // Music
+        this.music = this.sound.add('level1Music');
+        this.music.setLoop(true);
+        this.music.play();
         // The game width and height to set our assets to scale to the size of the game
         // IMPORTANT -----------------------------------------------------------------------------------------------
         const gameWidth = this.scale.width;
@@ -316,14 +335,14 @@ class LevelOne extends ConfigureScene {
         const platform3 = new Platform(this,gameWidth * 0.9,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.5, 0x696969);
         // Stacked platform and one in air
         const platform4 = new Platform(this,gameWidth * 0.54,this.scale.height * 0.74, gameWidth * 0.12, this.scale.height * 0.16, 0x696969);
-        const platform5 = new Platform(this,gameWidth * 0.3,this.scale.height * 0.5, gameWidth * 0.2, this.scale.height * 0.05, 0x696969);
+        const platform5 = new Platform(this,gameWidth * 0.3,this.scale.height * 0.55, gameWidth * 0.2, this.scale.height * 0.05, 0x696969);
         // Create variable track number of trash needed to be cleaned to go to next level
         this.trashCount = 3;
         // Create the trash group
         this.trashGroup = this.physics.add.group();
         const trash1 = this.createTrash(gameWidth * .46,gameHeight * .77,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
         const trash2 = this.createTrash(gameWidth * .57,gameHeight * .62,'trash',this.trashGroup,gameWidth *.04,gameHeight * .1);
-        const trash3 = this.createTrash(gameWidth * .25,gameHeight * .44,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
+        const trash3 = this.createTrash(gameWidth * .25,gameHeight * .48,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
         // Create the portal
         this.portal = this.add.sprite(gameWidth * .98, gameHeight * 0.6, 'portal');
         this.anims.create({
@@ -341,7 +360,7 @@ class LevelOne extends ConfigureScene {
         this.portal.body.setAllowGravity(false);
         this.portal.body.setImmovable(true);
         // Create the player
-        this.nova = new PlayerChar(this, gameWidth * 0.06, gameHeight * .63, 'player', 0)
+        this.nova = new PlayerChar(this, gameWidth * 0.1, gameHeight * .75, 'player', 0)
         // Set up physics for the player
         this.physics.world.enable(this.nova); // Enable physics for the player sprite
         this.nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform
@@ -364,6 +383,9 @@ class LevelOne extends ConfigureScene {
       // update input controls and player movement if they are out of bounds
         this.inputControls.update();
         if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width || this.nova.y < 0) {
+          if(this.music.isPlaying){
+            this.music.stop();
+          }
           // Reset touching trash
           this.touchedTrashCount = 0;
           console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -382,6 +404,10 @@ class LevelTwo extends ConfigureScene {
     super('LevelTwo');
   }
   create(){
+      // Music
+      this.music = this.sound.add('level2Music');
+      this.music.setLoop(true);
+      this.music.play();
       // The game width and height to set our assets to scale to the size of the game
       // IMPORTANT -----------------------------------------------------------------------------------------------
       const gameWidth = this.scale.width;
@@ -482,15 +508,18 @@ class LevelTwo extends ConfigureScene {
       this.physics.add.collider(this.nova,platform6);
       this.physics.add.collider(this.nova,platform7);
 
+    
 
       this.inputControls = new InputControls(this, this.nova);
 
   }
   update(){
     this.inputControls.update();
-
     // restart the scene if the player is out of bounds
     if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
+      if(this.music.isPlaying){
+        this.music.stop();
+      }
       // Reset touching trash
       this.touchedTrashCount = 0;
       console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -511,6 +540,12 @@ class LevelThree extends ConfigureScene {
     super('LevelThree');
   }
   create(){
+
+    // Music
+    this.music = this.sound.add('level3Music');
+    this.music.setLoop(true);
+    this.music.play();
+
     // The game width and height to set our assets to scale to the size of the game
     // IMPORTANT -----------------------------------------------------------------------------------------------
     const gameWidth = this.scale.width;
@@ -530,10 +565,105 @@ class LevelThree extends ConfigureScene {
     window.addEventListener('resize', resizeBackground);
     resizeBackground();
 
+    // Create the platforms
+    const platform = new Platform(this,gameWidth * .1,gameHeight * .94, gameWidth * 0.2, gameHeight * 0.1, 0x8AC1FA);
+    const platform2 = new Platform(this,gameWidth * .5,gameHeight * .94, gameWidth * 0.3, gameHeight * 0.1, 0x8AC1FA);
+    const platform3 = new Platform(this,gameWidth * .5,gameHeight * .69, gameWidth * 0.025, gameHeight * 0.4, 0x8AC1FA);
+    const platform4 = new Platform(this,gameWidth * .39,gameHeight * .5, gameWidth * 0.2, gameHeight * 0.025, 0x8AC1FA);
+    const platform5 = new Platform(this,gameWidth * .05,gameHeight * .5, gameWidth * 0.1, gameHeight * 0.025, 0x8AC1FA);
+    const platform6 = new Platform(this,gameWidth * .2,gameHeight * .7, gameWidth * 0.25, gameHeight *.025, 0x8AC1FA);
+    const platform7 = new Platform(this,gameWidth * .6,gameHeight * .65, gameWidth * 0.2, gameHeight *.025, 0x8AC1FA);
+    const platform8 = new Platform(this,gameWidth * .9,gameHeight * .9, gameWidth * 0.2, gameHeight *.2, 0x8AC1FA);
+    const platform9 = new Platform(this,gameWidth * .9,gameHeight * .2, gameWidth * 0.2, gameHeight *.025, 0x8AC1FA);
+    const platform10 = new Platform(this,gameWidth * .7,gameHeight * .3, gameWidth * 0.2, gameHeight * 0.025, 0x8AC1FA);
+    platform10.body.setSize(gameWidth * 0.2, gameHeight * 0.025, true);
+    // Set platform's initial position and movement range
+    const startY = platform10.y;
+    const endY = platform10.y + 100; // Adjust this value to control the movement range
+
+    // Move platform
+    this.tweens.add({
+      targets: platform10,
+      y: { from: startY -100 , to: endY, duration: 1200, ease: 'Linear' },
+      repeat: -1,
+      yoyo: true
+    });
 
 
+   
+
+    // Create the player
+    this.nova = new PlayerChar(this, gameWidth * 0.1, gameHeight * .84, 'player', 0)
+    // Set up physics for the player
+    this.physics.world.enable(this.nova); // Enable physics for the player sprite
+    this.nova.body.setBounce(0); // Set bounce to 0 to prevent bouncing off the platform
+    this.nova.body.setFriction(1); // Adjust friction as needed for smooth movement
+    // Create the trash
+    // Create variable track number of trash needed to be cleaned to go to next level
+    this.trashCount = 3;
+    // Create the trash group
+    this.trashGroup = this.physics.add.group();
+    const trash1 = this.createTrash(gameWidth * .54,gameHeight * .86,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
+    const trash2 = this.createTrash(gameWidth * .45,gameHeight * .84,'trash',this.trashGroup,gameWidth *.04,gameHeight * .1);
+    const trash3 = this.createTrash(gameWidth * .95,gameHeight * .14,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
+
+
+     
+
+    // Create the portal
+    this.portal = this.add.sprite(gameWidth * .95, gameHeight * 0.7, 'portal');
+    this.anims.create({
+        key: 'portal',
+        frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 29 }),
+        frameRate: 12,
+        repeat: -1
+    });
+    // play the portal animation and set physics
+    this.portal.anims.play('portal', true);
+    this.physics.world.enable(this.portal);
+    this.physics.add.existing(this.portal);
+    this.portal.body.setSize(gameWidth * .05, gameHeight * 0.15);
+    this.portal.setDisplaySize(gameWidth * .05, gameHeight * 0.2);
+    this.portal.body.setAllowGravity(false);
+    this.portal.body.setImmovable(true);
+ 
+    // physics stuff
+    this.physics.add.collider(this.nova,platform);
+    this.physics.add.collider(this.nova,platform2);
+    this.physics.add.collider(this.nova,platform3);
+    this.physics.add.collider(this.nova,platform4);
+    this.physics.add.collider(this.nova,platform5);
+    this.physics.add.collider(this.nova,platform6);
+    this.physics.add.collider(this.nova,platform7);
+    this.physics.add.collider(this.nova,platform8);
+    this.physics.add.collider(this.nova,platform9);
+    this.physics.add.collider(this.nova,platform10);
+
+    // collision detection for portal
+    this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'Menu'), null, this);
+
+    // collision detection for trash
+    this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
+
+
+    // add input controls
+    this.inputControls = new InputControls(this, this.nova);
   }
-  update(){}
+  update(){
+    // update input controls
+    this.inputControls.update();
+     // restart the scene if the player is out of bounds
+     if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
+      if(this.music.isPlaying){
+        this.music.stop();
+      }
+      // Reset touching trash
+      this.touchedTrashCount = 0;
+      console.log("Trash picked up by Nova ",this.touchedTrashCount);
+      // Restart the scene.
+      this.scene.restart();
+    }
+  }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -551,7 +681,7 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 10 },
-      debug: true,
+      debug: false,
     },
   },
   input: {
