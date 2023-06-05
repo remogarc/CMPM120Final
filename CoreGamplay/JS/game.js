@@ -36,6 +36,7 @@ class ConfigureScene extends Phaser.Scene {
     this.touchedTrashCount = 0;
     this.trashCount = 0;
     this.nextLevel = 0;
+    this.music = null;
   }
   preload(){
     // Load the font
@@ -55,6 +56,11 @@ class ConfigureScene extends Phaser.Scene {
     this.load.spritesheet('portal', 'Assets/portal.png', { frameWidth: 150, frameHeight: 175, endFrame: 30 });
     // Sound when the player picks up trash
     this.load.audio('trashPickup','Assets/trash_picked.mp3');
+
+    // Background music for each of the levels
+    this.load.audio('level1Music','Assets/music1.mp3');
+    this.load.audio('level2Music','Assets/music2.mp3');
+    this.load.audio('level3Music','Assets/music3.mp3');
   }
   create(){
     WebFont.load({
@@ -81,6 +87,8 @@ class ConfigureScene extends Phaser.Scene {
   //               duration: 10
   //           });
   //       }
+
+
   // Create the trash objects
   createTrash(x,y,texture,group,width,height){
     const trash = new Trash(this, x, y,texture,width,height);
@@ -114,6 +122,12 @@ class ConfigureScene extends Phaser.Scene {
     if(this.touchedTrashCount == this.trashCount){
       console.log('All trash picked up good work!');
       console.log('Going to next level', nextlevel);
+      // check if musicis playing
+      if(this.music != null && this.music.isPlaying && this.music){
+        // stop the music for level
+        this.music.stop();
+      }
+      // go to the next level
       this.scene.start(nextlevel);
     } else {
       // if not all trash is picked up, tell the player to pick up all trash
@@ -273,6 +287,11 @@ class LevelOne extends ConfigureScene {
         super('LevelOne');
     }
     create() {
+
+        // Music
+        this.music = this.sound.add('level1Music');
+        this.music.setLoop(true);
+        this.music.play();
         // The game width and height to set our assets to scale to the size of the game
         // IMPORTANT -----------------------------------------------------------------------------------------------
         const gameWidth = this.scale.width;
@@ -347,6 +366,9 @@ class LevelOne extends ConfigureScene {
       // update input controls and player movement if they are out of bounds
         this.inputControls.update();
         if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width || this.nova.y < 0) {
+          if(this.music.isPlaying){
+            this.music.stop();
+          }
           // Reset touching trash
           this.touchedTrashCount = 0;
           console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -365,6 +387,10 @@ class LevelTwo extends ConfigureScene {
     super('LevelTwo');
   }
   create(){
+      // Music
+      this.music = this.sound.add('level2Music');
+      this.music.setLoop(true);
+      this.music.play();
       // The game width and height to set our assets to scale to the size of the game
       // IMPORTANT -----------------------------------------------------------------------------------------------
       const gameWidth = this.scale.width;
@@ -465,15 +491,18 @@ class LevelTwo extends ConfigureScene {
       this.physics.add.collider(this.nova,platform6);
       this.physics.add.collider(this.nova,platform7);
 
+    
 
       this.inputControls = new InputControls(this, this.nova);
 
   }
   update(){
     this.inputControls.update();
-
     // restart the scene if the player is out of bounds
     if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
+      if(this.music.isPlaying){
+        this.music.stop();
+      }
       // Reset touching trash
       this.touchedTrashCount = 0;
       console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -494,6 +523,12 @@ class LevelThree extends ConfigureScene {
     super('LevelThree');
   }
   create(){
+
+    // Music
+    this.music = this.sound.add('level3Music');
+    this.music.setLoop(true);
+    this.music.play();
+
     // The game width and height to set our assets to scale to the size of the game
     // IMPORTANT -----------------------------------------------------------------------------------------------
     const gameWidth = this.scale.width;
@@ -602,6 +637,9 @@ class LevelThree extends ConfigureScene {
     this.inputControls.update();
      // restart the scene if the player is out of bounds
      if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
+      if(this.music.isPlaying){
+        this.music.stop();
+      }
       // Reset touching trash
       this.touchedTrashCount = 0;
       console.log("Trash picked up by Nova ",this.touchedTrashCount);
