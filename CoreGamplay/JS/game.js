@@ -299,14 +299,14 @@ class LevelOne extends ConfigureScene {
         const platform3 = new Platform(this,gameWidth * 0.9,gameHeight * 0.9, gameWidth * 0.2, gameHeight * 0.5, 0x696969);
         // Stacked platform and one in air
         const platform4 = new Platform(this,gameWidth * 0.54,this.scale.height * 0.74, gameWidth * 0.12, this.scale.height * 0.16, 0x696969);
-        const platform5 = new Platform(this,gameWidth * 0.3,this.scale.height * 0.5, gameWidth * 0.2, this.scale.height * 0.05, 0x696969);
+        const platform5 = new Platform(this,gameWidth * 0.3,this.scale.height * 0.55, gameWidth * 0.2, this.scale.height * 0.05, 0x696969);
         // Create variable track number of trash needed to be cleaned to go to next level
         this.trashCount = 3;
         // Create the trash group
         this.trashGroup = this.physics.add.group();
         const trash1 = this.createTrash(gameWidth * .46,gameHeight * .77,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
         const trash2 = this.createTrash(gameWidth * .57,gameHeight * .62,'trash',this.trashGroup,gameWidth *.04,gameHeight * .1);
-        const trash3 = this.createTrash(gameWidth * .25,gameHeight * .44,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
+        const trash3 = this.createTrash(gameWidth * .25,gameHeight * .48,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
         // Create the portal
         this.portal = this.add.sprite(gameWidth * .98, gameHeight * 0.6, 'portal');
         this.anims.create({
