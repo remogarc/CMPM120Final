@@ -118,20 +118,20 @@ class ConfigureScene extends Phaser.Scene {
       this.allTrashTouched();
     }
   }
-  // toggleMute(){
-  //   this.song = this.add.image(30,30, 'song');
-  //   //fix postion and scale 
-  //   this.song.setScale(2);
-  //   this.check = this.add.image(30,30,'check');
-  //   //fix position and scale
-  //   this.check.setScale(2);
-  //   this.check.visible = false;
-  //   this.song.setInteractive();
-  //   this.song.on("pointerup", () => {
-  //   this.sound.mute = !this.sound.mute;
-  //   this.check.visible = !this.check.visible;
-  //   });
-  // }
+  toggleMute(){
+    this.song = this.add.image(30,30, 'song');
+    //fix postion and scale 
+    this.song.setScale(5);
+    this.check = this.add.image(30,30,'check');
+    //fix position and scale
+    this.check.setScale(5);
+    this.check.visible = false;
+    this.song.setInteractive();
+    this.song.on("pointerup", () => {
+    this.sound.mute = !this.sound.mute;
+    this.check.visible = !this.check.visible;
+    });
+  }
   allTrashTouched(){
     console.log('All trash touched');
   }
