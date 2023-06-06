@@ -60,11 +60,13 @@ class ConfigureScene extends Phaser.Scene {
     //Sound pngs
     this.load.image('song', 'Assets/sound.png');
     this.load.image('check', 'Assets/mute.png');
-
     // Background music for each of the levels
     this.load.audio('level1Music','Assets/music1.mp3');
     this.load.audio('level2Music','Assets/music2.mp3');
     this.load.audio('level3Music','Assets/music3.mp3');
+    // JSON file for game data 
+    this.load.json('gameData','JS/GameData.json');
+
   }
   create(){
     WebFont.load({
@@ -171,6 +173,10 @@ class Menu extends Phaser.Scene {
       this.isPortrait = false;
     }
     create() {
+      // access the game data json file
+      this.gameData = this.cache.json.get('gameData');
+      console.log('Game Data', this.gameData);
+
       this.cameras.main.setBackgroundColor('#000f00');
       // Add resize event listener 
       window.addEventListener('resize',this.handleOrientationChange.bind(this));
@@ -182,8 +188,8 @@ class Menu extends Phaser.Scene {
         fontFamily: 'Rubik Puddles',
         align: 'center',
       };
-      // game text
-      this.gameText = this.add.text(centerX, centerY, 'Cosmic Cleanup', fontProperties);
+      // game text with json data file
+      this.gameText = this.add.text(centerX, centerY, this.gameData.GameTitle, fontProperties);
       this.gameText.setOrigin(0.5,2);
       this.gameText.setColor('#ffffff');
       // start text
