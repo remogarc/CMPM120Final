@@ -328,6 +328,9 @@ class LevelOne extends ConfigureScene {
         }
         window.addEventListener('resize', resizeBackground);
         resizeBackground();
+        this.toggleMute();
+
+        // this.add.text(50, 50, 'Cosmic Cleanup', { fontSize: 70 } )
         // Create the platform
         // (scene, x, y, width, height, color) - param to pass for platform
         // Three main platforms for the game 
@@ -427,6 +430,7 @@ class LevelTwo extends ConfigureScene {
       }
       window.addEventListener('resize', resizeBackground);
       resizeBackground();
+      this.toggleMute();
 
       // add platforms
       const platform = new Platform(this,gameWidth * .05,gameHeight * .73, gameWidth * 0.1, gameHeight * 0.5, 0xD2B48C);
@@ -565,6 +569,7 @@ class LevelThree extends ConfigureScene {
     }
     window.addEventListener('resize', resizeBackground);
     resizeBackground();
+    this.toggleMute();
 
     // Create the platforms
     const platform = new Platform(this,gameWidth * .1,gameHeight * .94, gameWidth * 0.2, gameHeight * 0.1, 0x8AC1FA);
