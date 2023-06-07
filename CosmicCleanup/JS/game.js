@@ -66,20 +66,18 @@ class ConfigureScene extends Phaser.Scene {
     this.load.audio('level3Music','../CoreGamplay/Assets/music3.mp3');
     // JSON file for game data 
     this.load.json('gameData','../CoreGamplay/JS/GameData.json');
-
     // star background
     this.load.video('star', '../Cinematics/Assets/spacewallp.mp4');
-
     // Intro cinematic video
     this.load.video('intro', '../Cinematics/Assets/intro.mp4');
-     // Intro cinematic video audio
-     this.load.video('introSound', '../Cinematics/Assets/introNew.mp4');
-
+    // Intro cinematic video audio
+    this.load.video('introSound', '../Cinematics/Assets/introNew.mp4');
     // Add our button
     this.load.image('button','../CoreGamplay/Assets/button.png');
-
-
-
+    // transition for planets
+    this.load.video('earthPlanet', '../Cinematics/Assets/earth.mp4');
+    this.load.video('marsPlanet', '../Cinematics/Assets/mars.mp4');
+    this.load.video('icePlanet', '../Cinematics/Assets/ice.mp4');
   }
   create(){
     WebFont.load({
@@ -87,7 +85,7 @@ class ConfigureScene extends Phaser.Scene {
         families: ['Rubik Puddles'],
       },
       active: () => {
-        game.scene.start('Menu');
+        game.scene.start('Menu',{ mutevalue: false });
       },
     });
   }
@@ -107,7 +105,9 @@ class ConfigureScene extends Phaser.Scene {
     // play trash pickup sound also making it little louder
     const trashPickupSound = this.sound.add('trashPickup');
     trashPickupSound.volume = 2;
-    trashPickupSound.play();
+    if(this.mutevalue == false){
+      trashPickupSound.play();
+    }
     // increment the trash count
     this.touchedTrashCount++;
     console.log('Trash picked up by Nova', this.touchedTrashCount);
@@ -116,20 +116,6 @@ class ConfigureScene extends Phaser.Scene {
     if(this.touchedTrashCount === this.countTrash){
       this.allTrashTouched();
     }
-  }
-  toggleMute(){
-    this.song = this.add.image(30,30, 'song');
-    //fix postion and scale 
-    this.song.setScale(5);
-    this.check = this.add.image(30,30,'check');
-    //fix position and scale
-    this.check.setScale(5);
-    this.check.visible = false;
-    this.song.setInteractive();
-    this.song.on("pointerup", () => {
-    this.sound.mute = !this.sound.mute;
-    this.check.visible = !this.check.visible;
-    });
   }
   allTrashTouched(){
     console.log('All trash touched');
@@ -169,28 +155,39 @@ class Menu extends ConfigureScene {
       this.isResizing = true;
       this.isPortrait = false;
     }
+    init(data) {
+        this.mutevalue = data.mutevalue;
+    } 
     create() {
         // gameSize
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
+        // this.mutevalue = false;
+
+        const backgroundMusic = this.sound.add('level1Music');
+        backgroundMusic.setLoop(true);
+        // backgroundMusic.play();
+        if(this.mutevalue == false){
+            backgroundMusic.play();
+        }
+
+        // this.music = this.sound.add('level2Music');
+        // this.music.setLoop(true);
+        // this.music.play();
+
 
         // set the background
         const video = this.add.video(0, 0, 'star');
         video.setOrigin(0.5);
         video.setLoop(true);
         video.play(true);
-        
         const scaleX = gameWidth / video.width;
         const scaleY = gameHeight / video.height;
         const scale = Math.min(scaleX, scaleY);
         video.setPosition(gameWidth / 2, gameHeight / 2);
-
-
         // access the game data json file
         this.gameData = this.cache.json.get('gameData');
         console.log('Game Data', this.gameData);
-
-        // this.cameras.main.setBackgroundColor('#000f00');
         // Add resize event listener 
         window.addEventListener('resize',this.handleOrientationChange.bind(this));
         // center of the screen
@@ -210,6 +207,23 @@ class Menu extends ConfigureScene {
         this.startText.setColor('#ffffff');
         this.startText.setOrigin(0.5);
         this.startText.setInteractive();
+
+        // settings text
+        this.settingsText = this.add.text(centerX, centerY, 'Settings', fontProperties)
+        this.settingsText.setColor('#ffffff');
+        this.settingsText.setOrigin(0.5, -1);
+        this.settingsText.setInteractive();
+        this.settingsText.on('pointerdown', () => {
+            backgroundMusic.stop();
+            this.scene.start('Settings', {mutevalue: this.mutevalue});
+            // this.scene.pause();
+            // this.scene.launch('Settings', {mutevalue: this.mutevalue, previousScene:this.scene.key});
+        });
+
+
+
+    
+
         // To start the game
         this.startText.on('pointerdown', () => {
             this.isResizing = false; // Stop resizing
@@ -241,6 +255,9 @@ class Menu extends ConfigureScene {
         this.orientationText3.setOrigin(0.5,-2);
         // Hide orientation text initially
         this.orientationText3.visible = false;
+
+       
+
         // Check initial orientation
         this.checkOrientation();
         // check for resizng of the game and update text accordingly
@@ -267,6 +284,7 @@ class Menu extends ConfigureScene {
         this.orientationText3.visible = true;
         this.gameText.visible = false;
         this.startText.visible = false;
+        this.settingsText.visible = false;
         console.log('Please rotate your device');
       } else if (!isPortrait && this.isPortrait){
         // If in landscape mode, hide orientation text and show our game text
@@ -275,6 +293,7 @@ class Menu extends ConfigureScene {
         this.orientationText3.visible = false;
         this.gameText.visible = true;
         this.startText.visible = true;
+        this.settingsText.visible = true;
         console.log('Landscape mode');
       }
       // update isPortrait flag
@@ -288,6 +307,7 @@ class Menu extends ConfigureScene {
       const fontSize = Math.round(this.scale.width * 0.07);
       this.gameText.setFontSize(fontSize);
       this.startText.setFontSize(fontSize);
+      this.settingsText.setFontSize(fontSize);
       this.orientationText.setFontSize(fontSize);
       this.orientationText2.setFontSize(fontSize);
       this.orientationText3.setFontSize(fontSize);
@@ -309,6 +329,7 @@ class Menu extends ConfigureScene {
       // Rotate the game and start text based on the device orientation
       this.gameText.setRotation(rotationAngle * Math.PI / -180);
       this.startText.setRotation(rotationAngle * Math.PI / -180);
+    this.settingsText.setRotation(rotationAngle * Math.PI / -180);
     }
     shutdown() {
       this.scale.off('resize', this.resizeListener);
@@ -320,15 +341,25 @@ class IntroCinematic extends ConfigureScene {
     constructor() {
         super('IntroCinematic');
     }
+    init(data) {
+      this.mutevalue = data.mutevalue;
+    } 
     create(){
          // gameSize
          const gameWidth = this.scale.width;
          const gameHeight = this.scale.height;
 
+       
+
          //video that acts like music for background
          const videoSound = this.add.video(0, 0, 'introSound')
          videoSound.setVisible(false);
-         videoSound.play(true);
+         if(this.mutevalue == false){
+          videoSound.play(true);
+
+          // backgroundMusic.play();
+        }
+        //  videoSound.play(true);
 
         //  set the background
          const video = this.add.video(0, 0, 'intro');
@@ -345,12 +376,13 @@ class IntroCinematic extends ConfigureScene {
         // add an event listener to the video when it is done playing and add go to the next scene button 
         video.on('complete', () => {
             videoSound.stop();
+
             // set the background
-            const video = this.add.video(0, 0, 'star');
+            const video = this.add.video(0, 0, 'earthPlanet');
             video.setOrigin(0.5);
             video.setLoop(true);
             video.play(true);
-            
+
             const scaleX = gameWidth / video.width;
             const scaleY = gameHeight / video.height;
             const scale = Math.min(scaleX, scaleY);
@@ -371,6 +403,10 @@ class IntroCinematic extends ConfigureScene {
                 yoyo: true,
                 repeat: -1
             });
+
+            button.on('pointerdown', () => {
+                this.scene.start('LevelOne', {mutevalue: this.mutevalue});
+            });
         });
     }
 }
@@ -388,7 +424,10 @@ class LevelOne extends ConfigureScene {
         // Music
         this.music = this.sound.add('level1Music');
         this.music.setLoop(true);
-        this.music.play();
+        if(this.mutevalue == false){
+          this.music.play();
+        }
+        // this.music.play();
         // The game width and height to set our assets to scale to the size of the game
         // IMPORTANT -----------------------------------------------------------------------------------------------
         const gameWidth = this.scale.width;
@@ -407,7 +446,6 @@ class LevelOne extends ConfigureScene {
         }
         window.addEventListener('resize', resizeBackground);
         resizeBackground();
-        this.toggleMute();
 
         // this.add.text(50, 50, 'Cosmic Cleanup', { fontSize: 70 } )
         // Create the platform
@@ -490,7 +528,10 @@ class LevelTwo extends ConfigureScene {
       // Music
       this.music = this.sound.add('level2Music');
       this.music.setLoop(true);
-      this.music.play();
+      if (this.mutevalue == false){
+        this.music.play();
+      }
+      // this.music.play();
       // The game width and height to set our assets to scale to the size of the game
       // IMPORTANT -----------------------------------------------------------------------------------------------
       const gameWidth = this.scale.width;
@@ -509,7 +550,6 @@ class LevelTwo extends ConfigureScene {
       }
       window.addEventListener('resize', resizeBackground);
       resizeBackground();
-      this.toggleMute();
 
       // add platforms
       const platform = new Platform(this,gameWidth * .05,gameHeight * .73, gameWidth * 0.1, gameHeight * 0.5, 0xD2B48C);
@@ -624,11 +664,15 @@ class LevelThree extends ConfigureScene {
     super('LevelThree');
   }
   create(){
+   
 
     // Music
     this.music = this.sound.add('level3Music');
     this.music.setLoop(true);
-    this.music.play();
+    // this.music.play();
+    if (this.mutevalue == false){
+      this.music.play();
+    }
 
     // The game width and height to set our assets to scale to the size of the game
     // IMPORTANT -----------------------------------------------------------------------------------------------
@@ -648,8 +692,8 @@ class LevelThree extends ConfigureScene {
     }
     window.addEventListener('resize', resizeBackground);
     resizeBackground();
-    this.toggleMute();
 
+    
     // Create the platforms
     const platform = new Platform(this,gameWidth * .1,gameHeight * .94, gameWidth * 0.2, gameHeight * 0.1, 0x8AC1FA);
     const platform2 = new Platform(this,gameWidth * .5,gameHeight * .94, gameWidth * 0.3, gameHeight * 0.1, 0x8AC1FA);
@@ -750,6 +794,61 @@ class LevelThree extends ConfigureScene {
   }
 }
 
+
+class Settings extends ConfigureScene {
+    constructor() {
+        super('Settings');
+    }
+    init(data) {
+        this.mutevalue = data.mutevalue;
+        this.previousScene = data.previousScene;
+    } 
+    create() {
+        // gameSize
+        const gameWidth = this.scale.width;
+        const gameHeight = this.scale.height;
+        // set the background
+        const video = this.add.video(0, 0, 'star');
+        video.setOrigin(0.5);
+        video.setLoop(true);
+        video.play(true);
+        const scaleX = gameWidth / video.width;
+        const scaleY = gameHeight / video.height;
+        const scale = Math.min(scaleX, scaleY);
+        video.setPosition(gameWidth / 2, gameHeight / 2);
+        this.add.text(20, 20, 'Settings', { font: '25px Arial', fill: '#ffffff' });
+        this.back = this.add.text(30, 300, 'back', { fontSize: '100px', fill: '#24487a' }).setInteractive()
+        this.back.on('pointerdown', () => {
+          // this.scene.resume(this.previousScene, { mutevalue: this.mutevalue });
+          // this.scene.stop();
+            this.scene.start('Menu', { mutevalue: this.mutevalue })
+            // this.scene.start(this.previousScene, { mutevalue: this.mutevalue });
+            // this.scene.stop();       
+        });
+
+        if(this.mutevalue == false){
+          this.createMute();
+        } else {
+          this.createUnmute();
+        }
+    }
+    createUnmute(){
+      this.unmute = this.add.text(30, 100, 'unmute', { fontSize: '100px', fill: '#24487a' }).setInteractive()
+      this.unmute.on('pointerdown', () => {
+          this.mutevalue = false;
+          this.unmute.destroy();       
+      })
+    }
+    createMute(){
+        this.mute = this.add.text(30, 100, 'mute', { fontSize: '100px', fill: '#24487a' }).setInteractive()
+        this.mute.on('pointerdown', () => {
+            this.mutevalue = true;
+            this.mute.destroy();       
+        }
+      )
+    }
+
+}
 // ------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------- GameConfig -----------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -772,8 +871,10 @@ const config = {
     keyboard: true,
     touch: true,
   },
-  scene: [ConfigureScene,Menu,IntroCinematic,LevelOne,LevelTwo,LevelThree],
+  scene: [ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree],
   // ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree
+  // create game object and set the initial mute state
+
 };
 
 const game = new Phaser.Game(config);
@@ -785,3 +886,22 @@ const game = new Phaser.Game(config);
 window.addEventListener('orientationchange', function () {
   game.scale.refresh();
 });
+
+
+
+
+
+// toggleMute(){
+//     this.song = this.add.image(30,30, 'song');
+//     //fix postion and scale 
+//     this.song.setScale(5);
+//     this.check = this.add.image(30,30,'check');
+//     //fix position and scale
+//     this.check.setScale(5);
+//     this.check.visible = false;
+//     this.song.setInteractive();
+//     this.song.on("pointerup", () => {
+//     this.sound.mute = !this.sound.mute;
+//     this.check.visible = !this.check.visible;
+//     });
+//   }
