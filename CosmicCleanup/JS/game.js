@@ -226,9 +226,10 @@ class Menu extends ConfigureScene {
 
         // To start the game
         this.startText.on('pointerdown', () => {
+            backgroundMusic.stop();
             this.isResizing = false; // Stop resizing
             this.shutdown();
-            this.scene.start('IntroCinematic');
+            this.scene.start('IntroCinematic', {mutevalue: this.mutevalue});
         }, this);
         // Blinking start text
         this.tweens.add({
@@ -804,26 +805,38 @@ class Settings extends ConfigureScene {
         this.previousScene = data.previousScene;
     } 
     create() {
+          // font for menu text
+          const fontProperties = {
+            fontFamily: 'Rubik Puddles',
+            align: 'center',
+        };
+        // center of the screen
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height / 2;
         // gameSize
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
+        
         // set the background
         const video = this.add.video(0, 0, 'star');
         video.setOrigin(0.5);
         video.setLoop(true);
         video.play(true);
+
+
+        // scale the video
         const scaleX = gameWidth / video.width;
         const scaleY = gameHeight / video.height;
         const scale = Math.min(scaleX, scaleY);
         video.setPosition(gameWidth / 2, gameHeight / 2);
-        this.add.text(20, 20, 'Settings', { font: '25px Arial', fill: '#ffffff' });
+
+        const settingsText = this.add.text(centerX, centerY, 'Settings',fontProperties);
+        settingsText.setOrigin(0.5,3);
+        settingsText.setFontSize(gameWidth * .05);
+
         this.back = this.add.text(30, 300, 'back', { fontSize: '100px', fill: '#24487a' }).setInteractive()
         this.back.on('pointerdown', () => {
-          // this.scene.resume(this.previousScene, { mutevalue: this.mutevalue });
-          // this.scene.stop();
-            this.scene.start('Menu', { mutevalue: this.mutevalue })
-            // this.scene.start(this.previousScene, { mutevalue: this.mutevalue });
-            // this.scene.stop();       
+            this.scene.start('Menu', { mutevalue: this.mutevalue })    
         });
 
         if(this.mutevalue == false){
