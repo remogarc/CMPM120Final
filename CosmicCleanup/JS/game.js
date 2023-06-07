@@ -1,6 +1,6 @@
 // Our prefab.js file is a collection of classes that we can use to create game objects.
-import { InputControls,Platform,PlayerChar,Trash/*,Captions*/ } from '/CoreGamplay/JS/prefabs.js';
-
+import { InputControls,Platform,PlayerChar,Trash/*,Captions*/ } from '../CoreGamplay/js/prefabs.js';
+// /CoreGamplay/js/prefabs.js'
 // test comment
 console.log('game.js loaded');
 
