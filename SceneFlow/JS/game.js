@@ -69,7 +69,12 @@ class Menu extends Phaser.Scene {
             this.check = this.add.image(gameWidth * .9,gameHeight * .9,'check');
             //fix position and scale
             this.check.setScale(4);
-            this.check.visible = false;
+            if(this.sound.mute == false){
+                this.check.visible = false;
+            }
+            else{
+                this.check.visible = true;
+            }
             this.song.setInteractive();
             this.song.on("pointerup", () => {
             this.sound.mute = !this.sound.mute;
