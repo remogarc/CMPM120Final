@@ -175,6 +175,7 @@ class Menu extends ConfigureScene {
     }
     init(data){
       this.mutevalue = data.mutevalue;
+      this.previousScene = data.previousScene;
     }
    
     create() {
@@ -183,13 +184,15 @@ class Menu extends ConfigureScene {
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
         // this.mutevalue = false;
-
+        // background music
         const backgroundMusic = this.sound.add('level1Music');
         backgroundMusic.setLoop(true);
         // backgroundMusic.play();
         if(this.mutevalue == false){
             backgroundMusic.play();
         }
+        // add sound when button is clicked
+        const sound = this.sound.add('trashPickup')
 
         // this.music = this.sound.add('level2Music');
         // this.music.setLoop(true);
@@ -227,21 +230,12 @@ class Menu extends ConfigureScene {
         this.startText.setColor('#ffffff');
         this.startText.setOrigin(0.5);
         this.startText.setInteractive();
-
-        // settings text
-        this.settingsText = this.add.text(centerX, centerY, 'Settings', fontProperties)
-        this.settingsText.setColor('#ffffff');
-        this.settingsText.setOrigin(0.5, -1);
-        this.settingsText.setInteractive();
-        this.settingsText.on('pointerdown', () => {
-            backgroundMusic.stop();
-            this.scene.start('Settings', { mutevalue: this.mutevalue });
-
-        });
-
-        // To start the game
+          // To start the game
         this.startText.on('pointerdown', () => {
             backgroundMusic.stop();
+            if(this.mutevalue == false){
+                sound.play();
+            }
             this.isResizing = false; // Stop resizing
             this.shutdown();
             this.scene.start('IntroCinematic', { mutevalue: this.mutevalue });
@@ -255,6 +249,23 @@ class Menu extends ConfigureScene {
             yoyo: true,
             repeat: -1,
         });
+
+
+        // settings text
+        this.settingsText = this.add.text(centerX,centerY, '⚙️', fontProperties)
+        this.settingsText.setColor('#ffffff');
+        this.settingsText.setOrigin(-4, 2);
+        this.settingsText.setInteractive();
+        this.settingsText.on('pointerdown', () => {
+            backgroundMusic.stop();
+            if(this.mutevalue == false){
+                sound.play();
+            }
+            this.scene.start('Settings', { mutevalue: this.mutevalue, previousScene: this.scene.key });
+
+        });
+
+      
         // Orientation text to indicate player to rotate device on smaller screens when on portrait mode
         this.orientationText = this.add.text(centerX, centerY + 100, 'Please rotate your device', fontProperties);
         this.orientationText.setColor('#ffffff');
@@ -359,9 +370,16 @@ class IntroCinematic extends ConfigureScene {
     }
     init(data){
       this.mutevalue = data.mutevalue;
+      this.previousScene = data.previousScene;
     }
   
     create(){
+          const sound = this.sound.add('trashPickup')
+          // font for menu text
+          const fontProperties = {
+            fontFamily: 'Rubik Puddles',
+            align: 'center',
+        };
          // gameSize
          const gameWidth = this.scale.width;
          const gameHeight = this.scale.height;
@@ -370,9 +388,7 @@ class IntroCinematic extends ConfigureScene {
          videoSound.setVisible(false);
          if(this.mutevalue == false){
           videoSound.play(true);
-          // backgroundMusic.play();
         }
-        //  videoSound.play(true);
 
         //  set the background
          const video = this.add.video(0, 0, 'intro');
@@ -386,6 +402,26 @@ class IntroCinematic extends ConfigureScene {
          video.setLoop(false);
 
 
+          // Add skip button
+        const skipButton = this.add.text(gameWidth * 0.9, gameHeight * 0.9, 'Skip', fontProperties).setInteractive();
+        skipButton.setFontSize(gameWidth * 0.05);
+        skipButton.setOrigin(1);
+        skipButton.on('pointerdown', () => {
+          if(this.mutevalue == false){
+            sound.play();
+          }
+            this.skipIntro();
+        });
+
+        // Function to skip the intro and start the first level
+        this.skipIntro = () => {
+          videoSound.stop();
+          video.destroy(); // Destroy the video
+          this.scene.start('LevelOne', { mutevalue: this.mutevalue });
+      };
+        
+       
+
         // add an event listener to the video when it is done playing and add go to the next scene button 
         video.on('complete', () => {
             videoSound.stop();
@@ -395,6 +431,7 @@ class IntroCinematic extends ConfigureScene {
             video.setOrigin(0.5);
             video.setLoop(true);
             video.play(true);
+            
 
             const scaleX = gameWidth / video.width;
             const scaleY = gameHeight / video.height;
@@ -434,9 +471,16 @@ class LevelOne extends ConfigureScene {
     }
     init(data){
       this.mutevalue = data.mutevalue;
+      this.previousScene = data.previousScene;
     }
     
     create() {
+      // feedback sound
+      const sound = this.sound.add('trashPickup');
+      const fontProperties = {
+        fontFamily: 'Rubik Puddles',
+        align: 'center',
+    };
       console.log(this.mutevalue);
         this.music = this.sound.add('level1Music');
         this.music.setLoop(true);
@@ -449,9 +493,7 @@ class LevelOne extends ConfigureScene {
         const gameHeight = this.scale.height;
 
        
-        // Create variables to track number of trash picked up
-        console.log("Trash picked up by Nova ",this.touchedTrashCount);
-        console.log("Trash needed to be picked up for this level",this.trashCount);
+        
         // Create the background
         const background = this.add.sprite(0, 0, 'earth');
         background.setOrigin(0, 0);
@@ -461,6 +503,24 @@ class LevelOne extends ConfigureScene {
         }
         window.addEventListener('resize', resizeBackground);
         resizeBackground();
+
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height / 2;
+
+        
+        //  settings
+        const settingsText = this.add.text(centerX, centerY, '⚙️');
+        settingsText.setOrigin(-6,4);
+        settingsText.setFontSize(gameWidth * .05);
+        settingsText.setInteractive();
+        settingsText.on('pointerdown', () => {
+          // stop music
+          if(this.mutevalue == false){
+            sound.play();
+          }
+          this.music.stop();
+            this.scene.start('Settings', { mutevalue: this.mutevalue, previousScene: this.scene.key });
+        });
 
         // this.add.text(50, 50, 'Cosmic Cleanup', { fontSize: 70 } )
         // Create the platform
@@ -474,6 +534,9 @@ class LevelOne extends ConfigureScene {
         const platform5 = new Platform(this,gameWidth * 0.3,this.scale.height * 0.55, gameWidth * 0.2, this.scale.height * 0.05, 0x696969);
         // Create variable track number of trash needed to be cleaned to go to next level
         this.trashCount = 3;
+        // Create variables to track number of trash picked up
+        console.log("Trash picked up by Nova ",this.touchedTrashCount);
+        console.log("Trash needed to be picked up for this level",this.trashCount);
         // Create the trash group
         this.trashGroup = this.physics.add.group();
         const trash1 = this.createTrash(gameWidth * .46,gameHeight * .77,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
@@ -541,6 +604,7 @@ class LevelTwo extends ConfigureScene {
   }
   init(data){
     this.mutevalue = data.mutevalue;
+    this.previousScene = data.previousScene;
   }
 
   create(){
@@ -559,9 +623,7 @@ class LevelTwo extends ConfigureScene {
       const gameWidth = this.scale.width;
       const gameHeight = this.scale.height;
 
-      // Create variables to track number of trash picked up
-      console.log("Trash picked up by Nova ",this.touchedTrashCount);
-      console.log("Trash needed to be picked up for this level",this.trashCount);
+     
 
       // Create the background
       const background = this.add.sprite(0, 0, 'mars');
@@ -572,6 +634,34 @@ class LevelTwo extends ConfigureScene {
       }
       window.addEventListener('resize', resizeBackground);
       resizeBackground();
+
+      // center of the screen
+      const centerX = this.cameras.main.width / 2;
+      const centerY = this.cameras.main.height / 2;
+
+      // feedback sound
+      const sound = this.sound.add('trashPickup');
+      const fontProperties = {
+        fontFamily: 'Rubik Puddles',
+        align: 'center',
+    };
+
+     //  settings
+     const settingsText = this.add.text(centerX, centerY, '⚙️');
+     settingsText.setOrigin(-6,4);
+     settingsText.setFontSize(gameWidth * .05);
+     settingsText.setInteractive();
+     settingsText.on('pointerdown', () => {
+       // stop music
+       if(this.mutevalue == false){
+         sound.play();
+       }
+       this.music.stop();
+         this.scene.start('Settings', { mutevalue: this.mutevalue, previousScene: this.scene.key });
+     });
+
+
+
 
       // add platforms
       const platform = new Platform(this,gameWidth * .05,gameHeight * .73, gameWidth * 0.1, gameHeight * 0.5, 0xD2B48C);
@@ -608,6 +698,9 @@ class LevelTwo extends ConfigureScene {
       // add trash
       // Create variable track number of trash needed to be cleaned to go to next level
       this.trashCount = 3;
+       // Create variables to track number of trash picked up
+       console.log("Trash picked up by Nova ",this.touchedTrashCount);
+       console.log("Trash needed to be picked up for this level",this.trashCount);
       // Create the trash group
       this.trashGroup = this.physics.add.group();
       const trash1 = this.createTrash(gameWidth * .9,gameHeight * .85,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
@@ -676,9 +769,7 @@ class LevelTwo extends ConfigureScene {
     this.inputControls.update();
     // restart the scene if the player is out of bounds
     if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
-      // if(this.music.isPlaying){
-      //   this.music.stop();
-      // }
+      this.music.stop();
       // Reset touching trash
       this.touchedTrashCount = 0;
       console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -719,10 +810,6 @@ class LevelThree extends ConfigureScene {
     const gameWidth = this.scale.width;
     const gameHeight = this.scale.height;
 
-    // Create variables to track number of trash picked up
-    console.log("Trash picked up by Nova ",this.touchedTrashCount);
-    console.log("Trash needed to be picked up for this level",this.trashCount);
-
     // Create the background
     const background = this.add.sprite(0, 0, 'ice');
     background.setOrigin(0, 0);
@@ -732,6 +819,33 @@ class LevelThree extends ConfigureScene {
     }
     window.addEventListener('resize', resizeBackground);
     resizeBackground();
+
+    
+      // center of the screen
+      const centerX = this.cameras.main.width / 2;
+      const centerY = this.cameras.main.height / 2;
+
+      // feedback sound
+      const sound = this.sound.add('trashPickup');
+      const fontProperties = {
+        fontFamily: 'Rubik Puddles',
+        align: 'center',
+    };
+
+     //  settings
+     const settingsText = this.add.text(centerX, centerY, '⚙️');
+     settingsText.setOrigin(-6,4);
+     settingsText.setFontSize(gameWidth * .05);
+     settingsText.setInteractive();
+     settingsText.on('pointerdown', () => {
+       // stop music
+       if(this.mutevalue == false){
+         sound.play();
+       }
+       this.music.stop();
+         this.scene.start('Settings', { mutevalue: this.mutevalue, previousScene: this.scene.key });
+     });
+
 
     
     // Create the platforms
@@ -769,6 +883,9 @@ class LevelThree extends ConfigureScene {
     // Create the trash
     // Create variable track number of trash needed to be cleaned to go to next level
     this.trashCount = 3;
+     // Create variables to track number of trash picked up
+     console.log("Trash picked up by Nova ",this.touchedTrashCount);
+     console.log("Trash needed to be picked up for this level",this.trashCount);
     // Create the trash group
     this.trashGroup = this.physics.add.group();
     const trash1 = this.createTrash(gameWidth * .54,gameHeight * .86,'trash',this.trashGroup,gameWidth *.04,gameHeight * .06);
@@ -822,9 +939,7 @@ class LevelThree extends ConfigureScene {
     this.inputControls.update();
      // restart the scene if the player is out of bounds
      if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
-      if(this.music.isPlaying){
-        this.music.stop();
-      }
+      this.music.stop();
       // Reset touching trash
       this.touchedTrashCount = 0;
       console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -849,6 +964,8 @@ class Settings extends ConfigureScene {
             fontFamily: 'Rubik Puddles',
             align: 'center',
         };
+        // sound for feedback
+        const sound = this.sound.add('trashPickup');
         // center of the screen
         const centerX = this.cameras.main.width / 2;
         const centerY = this.cameras.main.height / 2;
@@ -873,9 +990,14 @@ class Settings extends ConfigureScene {
         settingsText.setOrigin(0.5,3);
         settingsText.setFontSize(gameWidth * .05);
 
-        this.back = this.add.text(30, 300, 'back', { fontSize: '100px', fill: '#24487a' }).setInteractive()
+        this.back = this.add.text(centerX, centerY, 'back', fontProperties).setInteractive()
+        this.back.setOrigin(0.5, -1);
+        this.back.setFontSize(gameWidth * .05);
         this.back.on('pointerdown', () => {
-            this.scene.start('Menu', { mutevalue: this.mutevalue })    
+            if(this.mutevalue == false){
+              sound.play();
+            }
+            this.scene.start(this.previousScene, { mutevalue: this.mutevalue })    
         });
 
         if(this.mutevalue == false){
@@ -885,17 +1007,48 @@ class Settings extends ConfigureScene {
         }
     }
     createUnmute(){
-      this.unmute = this.add.text(30, 100, 'unmute', { fontSize: '100px', fill: '#24487a' }).setInteractive()
+      const sound = this.sound.add('trashPickup');
+       // font for menu text
+       const fontProperties = {
+        fontFamily: 'Rubik Puddles',
+        align: 'center',
+      };
+      const centerX = this.cameras.main.width / 2;
+      const centerY = this.cameras.main.height / 2;
+      const gameWidth = this.scale.width;
+      this.unmute = this.add.text(centerX, centerY, 'unmute', fontProperties).setInteractive()
+      this.unmute.setOrigin(0.5,1);
+      this.unmute.setFontSize(gameWidth * .05);
       this.unmute.on('pointerdown', () => {
+        if(this.mutevalue == false){
+          sound.play();
+        }
           this.mutevalue = false;
-          this.unmute.destroy();       
+          this.unmute.destroy();
+          this.createMute();     
       })
     }
+    
     createMute(){
-        this.mute = this.add.text(30, 100, 'mute', { fontSize: '100px', fill: '#24487a' }).setInteractive()
+      const sound = this.sound.add('trashPickup');
+       // font for menu text
+       const fontProperties = {
+        fontFamily: 'Rubik Puddles',
+        align: 'center',
+      };
+      const centerX = this.cameras.main.width / 2;
+      const centerY = this.cameras.main.height / 2;
+        this.mute = this.add.text(centerX, centerY, 'mute', fontProperties).setInteractive()
+        this.mute.setOrigin(0.5,1);
+        const gameWidth = this.scale.width;
+        this.mute.setFontSize(gameWidth * .05);
         this.mute.on('pointerdown', () => {
+            if(this.mutevalue == false){
+              sound.play();
+            }
             this.mutevalue = true;
-            this.mute.destroy();       
+            this.mute.destroy();
+            this.createUnmute();     
         }
       )
     }
