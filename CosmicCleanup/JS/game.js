@@ -1,5 +1,5 @@
 // Our prefab.js file is a collection of classes that we can use to create game objects.
-import { InputControls,Platform,PlayerChar,Trash/*,Captions*/ } from 'https://remogarc.github.io/CMPM120Final/CoreGamplay/JS/prefabs.js';
+import { InputControls,Platform,PlayerChar,Trash} from 'https://remogarc.github.io/CMPM120Final/CoreGamplay/JS/prefabs.js';
 // /CoreGamplay/js/prefabs.js'
 // test comment
 console.log('game.js loaded');
@@ -36,8 +36,9 @@ class ConfigureScene extends Phaser.Scene {
     this.trashGroup = null;
     this.touchedTrashCount = 0;
     this.trashCount = 0;
-    this.nextLevel = 0;
-    this.music = null;
+    // this.nextLevel = 0;
+    // this.music = null;
+    // this.mutevalue = false;
   }
   preload(){
     // Load the font
@@ -85,7 +86,7 @@ class ConfigureScene extends Phaser.Scene {
         families: ['Rubik Puddles'],
       },
       active: () => {
-        game.scene.start('Menu',{ mutevalue: false });
+        game.scene.start('Menu',{mutevalue: false});
       },
     });
   }
@@ -101,10 +102,15 @@ class ConfigureScene extends Phaser.Scene {
     trash.body.setImmovable(true);
     trash.body.setCollideWorldBounds(true); // Prevent the trash object from moving outside the world bounds
   }
+
+
+
   trashTouched = (nova,trash) => {
     // play trash pickup sound also making it little louder
+    console.log('Trash touched by Nova');
     const trashPickupSound = this.sound.add('trashPickup');
     trashPickupSound.volume = 2;
+    console.log(this.mutevalue);
     if(this.mutevalue == false){
       trashPickupSound.play();
     }
@@ -120,18 +126,30 @@ class ConfigureScene extends Phaser.Scene {
   allTrashTouched(){
     console.log('All trash touched');
   }
-  goNext(nextlevel){
+  goNext(nextlevel,mutevalue){
     // check if all trash has been picked up
-    if(this.touchedTrashCount == this.trashCount){
+    // console.log(mutevalue)
+    if(this.touchedTrashCount === this.trashCount){
       console.log('All trash picked up good work!');
       console.log('Going to next level', nextlevel);
       // check if musicis playing
-      if(this.music != null && this.music.isPlaying && this.music){
-        // stop the music for level
+      // if(this.music != null && this.music.isPlaying && this.music){
+      //   // stop the music for level
+      //   this.music.stop();
+      // }
+
+      // if (this.music !=null){
+      //   this.music.stop();
+      // }
+      if (this.music && this.music.isPlaying){
         this.music.stop();
       }
+      this.portal.destroy();
+      //  stop background music of current level
+      // this.sound.stopAll();
       // go to the next level
-      this.scene.start(nextlevel);
+      // { mutevalue: this.mutevalue }
+      this.scene.start(nextlevel,{mutevalue: this.mutevalue});
     } else {
       // if not all trash is picked up, tell the player to pick up all trash
       console.log('Not all trash picked up, please pick up all trash');
@@ -155,10 +173,12 @@ class Menu extends ConfigureScene {
       this.isResizing = true;
       this.isPortrait = false;
     }
-    init(data) {
-        this.mutevalue = data.mutevalue;
-    } 
+    init(data){
+      this.mutevalue = data.mutevalue;
+    }
+   
     create() {
+      console.log(this.mutevalue);
         // gameSize
         const gameWidth = this.scale.width;
         const gameHeight = this.scale.height;
@@ -215,21 +235,16 @@ class Menu extends ConfigureScene {
         this.settingsText.setInteractive();
         this.settingsText.on('pointerdown', () => {
             backgroundMusic.stop();
-            this.scene.start('Settings', {mutevalue: this.mutevalue});
-            // this.scene.pause();
-            // this.scene.launch('Settings', {mutevalue: this.mutevalue, previousScene:this.scene.key});
+            this.scene.start('Settings', { mutevalue: this.mutevalue });
+
         });
-
-
-
-    
 
         // To start the game
         this.startText.on('pointerdown', () => {
             backgroundMusic.stop();
             this.isResizing = false; // Stop resizing
             this.shutdown();
-            this.scene.start('IntroCinematic', {mutevalue: this.mutevalue});
+            this.scene.start('IntroCinematic', { mutevalue: this.mutevalue });
         }, this);
         // Blinking start text
         this.tweens.add({
@@ -342,22 +357,19 @@ class IntroCinematic extends ConfigureScene {
     constructor() {
         super('IntroCinematic');
     }
-    init(data) {
+    init(data){
       this.mutevalue = data.mutevalue;
-    } 
+    }
+  
     create(){
          // gameSize
          const gameWidth = this.scale.width;
          const gameHeight = this.scale.height;
-
-       
-
          //video that acts like music for background
          const videoSound = this.add.video(0, 0, 'introSound')
          videoSound.setVisible(false);
          if(this.mutevalue == false){
           videoSound.play(true);
-
           // backgroundMusic.play();
         }
         //  videoSound.play(true);
@@ -420,15 +432,17 @@ class LevelOne extends ConfigureScene {
     constructor() {
         super('LevelOne');
     }
+    init(data){
+      this.mutevalue = data.mutevalue;
+    }
+    
     create() {
-
-        // Music
+      console.log(this.mutevalue);
         this.music = this.sound.add('level1Music');
         this.music.setLoop(true);
         if(this.mutevalue == false){
-          this.music.play();
+            this.music.play();
         }
-        // this.music.play();
         // The game width and height to set our assets to scale to the size of the game
         // IMPORTANT -----------------------------------------------------------------------------------------------
         const gameWidth = this.scale.width;
@@ -494,7 +508,8 @@ class LevelOne extends ConfigureScene {
         this.physics.add.collider(this.nova,platform4);
         this.physics.add.collider(this.nova,platform5);
         // collision detection for portal
-        this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'LevelTwo'), null, this);
+        // this,
+        this.physics.add.collider(this.nova, this.portal,this.goNext.bind(this,'LevelTwo'), null, this);
         // collision detection for trash
         this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
         // Create the input controls
@@ -505,9 +520,7 @@ class LevelOne extends ConfigureScene {
       // update input controls and player movement if they are out of bounds
         this.inputControls.update();
         if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width || this.nova.y < 0) {
-          if(this.music.isPlaying){
-            this.music.stop();
-          }
+          this.music.stop();
           // Reset touching trash
           this.touchedTrashCount = 0;
           console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -515,6 +528,7 @@ class LevelOne extends ConfigureScene {
           this.scene.restart();
         } 
     }
+    
     
 }
 // ------------------------------------------------------------------------------------------------------------
@@ -525,13 +539,20 @@ class LevelTwo extends ConfigureScene {
   constructor() {
     super('LevelTwo');
   }
+  init(data){
+    this.mutevalue = data.mutevalue;
+  }
+
   create(){
-      // Music
       this.music = this.sound.add('level2Music');
       this.music.setLoop(true);
-      if (this.mutevalue == false){
-        this.music.play();
+      // backgroundMusic.play();
+      console.log(this.mutevalue);
+
+      if(this.mutevalue == false){
+          this.music.play();
       }
+        
       // this.music.play();
       // The game width and height to set our assets to scale to the size of the game
       // IMPORTANT -----------------------------------------------------------------------------------------------
@@ -600,6 +621,19 @@ class LevelTwo extends ConfigureScene {
           frameRate: 12,
           repeat: -1
       });
+
+
+         // Check if the 'portal' animation already exists
+    if (!this.anims.exists('portal')) {
+      // Create the 'portal' animation
+      this.anims.create({
+        key: 'portal',
+        frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 29 }),
+        frameRate: 12,
+        repeat: -1
+      });
+    }
+
       // play the portal animation and set physics
       this.portal.anims.play('portal', true);
       this.physics.world.enable(this.portal);
@@ -642,9 +676,9 @@ class LevelTwo extends ConfigureScene {
     this.inputControls.update();
     // restart the scene if the player is out of bounds
     if (this.nova.x < 0 ||this.nova.y > this.scale.height || this.nova.x > this.scale.width) {
-      if(this.music.isPlaying){
-        this.music.stop();
-      }
+      // if(this.music.isPlaying){
+      //   this.music.stop();
+      // }
       // Reset touching trash
       this.touchedTrashCount = 0;
       console.log("Trash picked up by Nova ",this.touchedTrashCount);
@@ -664,6 +698,11 @@ class LevelThree extends ConfigureScene {
   constructor() {
     super('LevelThree');
   }
+  init(data){
+    this.mutevalue = data.mutevalue;
+  }
+ 
+  
   create(){
    
 
@@ -885,6 +924,7 @@ const config = {
     touch: true,
   },
   scene: [ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree],
+  // ConfigureScene,Menu,Settings,IntroCinematic,LevelOne
   // ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree
   // create game object and set the initial mute state
 
@@ -899,22 +939,3 @@ const game = new Phaser.Game(config);
 window.addEventListener('orientationchange', function () {
   game.scale.refresh();
 });
-
-
-
-
-
-// toggleMute(){
-//     this.song = this.add.image(30,30, 'song');
-//     //fix postion and scale 
-//     this.song.setScale(5);
-//     this.check = this.add.image(30,30,'check');
-//     //fix position and scale
-//     this.check.setScale(5);
-//     this.check.visible = false;
-//     this.song.setInteractive();
-//     this.song.on("pointerup", () => {
-//     this.sound.mute = !this.sound.mute;
-//     this.check.visible = !this.check.visible;
-//     });
-//   }
