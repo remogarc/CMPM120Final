@@ -4,12 +4,6 @@ import { InputControls,Platform,PlayerChar,Trash} from 'https://remogarc.github.
 // test comment
 console.log('game.js loaded');
 
-// -----------------------------------------------------------------------------------------------------------------------
-// --------------------------------------------------TO DO LIST--------------------------------------------------
-// Mobile controls sprites and hitbox for the controls
-// Cinematics
-// Captions
-// Toggle music 
 // ----------------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------CODE BREAKDOWN------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
@@ -252,9 +246,9 @@ class Menu extends ConfigureScene {
 
 
         // settings text
-        this.settingsText = this.add.text(centerX,centerY, '⚙️', fontProperties)
+        this.settingsText = this.add.text(0,0, '⚙️', fontProperties)
         this.settingsText.setColor('#ffffff');
-        this.settingsText.setOrigin(-4, 2);
+        // this.settingsText.setOrigin(-4, 2);
         this.settingsText.setInteractive();
         this.settingsText.on('pointerdown', () => {
             backgroundMusic.stop();
@@ -282,8 +276,6 @@ class Menu extends ConfigureScene {
         this.orientationText3.setOrigin(0.5,-2);
         // Hide orientation text initially
         this.orientationText3.visible = false;
-
-       
 
         // Check initial orientation
         this.checkOrientation();
@@ -374,6 +366,7 @@ class IntroCinematic extends ConfigureScene {
     }
   
     create(){
+
           const sound = this.sound.add('trashPickup')
           // font for menu text
           const fontProperties = {
@@ -417,7 +410,10 @@ class IntroCinematic extends ConfigureScene {
         this.skipIntro = () => {
           videoSound.stop();
           video.destroy(); // Destroy the video
-          this.scene.start('LevelOne', { mutevalue: this.mutevalue });
+          //this.time.delayedCall(1000, () => {
+            //this.cameras.main.fade(1000, 0,0,0);
+            this.scene.start('LevelOne', {mutevalue: this.mutevalue});
+          //}, [], this);
       };
         
        
@@ -455,10 +451,143 @@ class IntroCinematic extends ConfigureScene {
             });
 
             button.on('pointerdown', () => {
+              this.time.delayedCall(1000, () => {
+                this.cameras.main.fade(1000, 0,0,0);
                 this.scene.start('LevelOne', {mutevalue: this.mutevalue});
+              }, [], this);
             });
         });
     }
+}
+
+//  ------------------------------------------------------------------------------------------------------------
+//  -------------------------------------------------- CinematicTwo -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+class CinematicTwo extends ConfigureScene {
+  constructor() {
+      super('CinematicTwo');
+  }
+  init(data){
+    this.mutevalue = data.mutevalue;
+    this.previousScene = data.previousScene;
+  }
+
+  create(){
+        const sound = this.sound.add('trashPickup')
+        // font for menu text
+        const fontProperties = {
+          fontFamily: 'Rubik Puddles',
+          align: 'center',
+      };
+       // gameSize
+       const gameWidth = this.scale.width;
+       const gameHeight = this.scale.height;
+       //video that acts like music for background
+      //  const videoSound = this.add.video(0, 0, 'introSound')
+      //  videoSound.setVisible(false);
+      //  if(this.mutevalue == false){
+      //   videoSound.play(true);
+      // }
+
+      //  set the background
+       const video = this.add.video(0, 0, 'marsPlanet');
+       video.setOrigin(0.5);
+       video.setLoop(true);
+       video.play(true);
+       const scaleX = gameWidth / video.width;
+       const scaleY = gameHeight / video.height;
+       const scale = Math.min(scaleX, scaleY);
+       video.setPosition(gameWidth / 2, gameHeight / 2);
+       video.setLoop(false);
+
+       this.time.delayedCall(5000, () => {
+          const button = this.add.sprite(gameWidth * .9, gameHeight *.8, 'button')
+          .setInteractive()
+          .setScale(.25)
+          .setAlpha(0);
+          // Create a fade-in tween for the button
+          this.tweens.add({
+              targets: button,
+              alpha: 1,
+              scaleX: .5,
+              scaleY: .5,
+              duration:1000,
+              ease: 'Power1',
+              yoyo: true,
+              repeat: -1
+          });
+      
+        button.on('pointerdown', () => {
+          this.time.delayedCall(1000, () => {
+            this.cameras.main.fade(1000, 0,0,0);
+            this.scene.start('LevelTwo', {mutevalue: this.mutevalue});
+          }, [], this);
+        });
+      });
+  }
+}
+
+//  ------------------------------------------------------------------------------------------------------------
+//  -------------------------------------------------- CinematicThree -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+class CinematicThree extends ConfigureScene {
+  constructor() {
+      super('CinematicThree');
+  }
+  init(data){
+    this.mutevalue = data.mutevalue;
+    this.previousScene = data.previousScene;
+  }
+
+  create(){
+        const sound = this.sound.add('trashPickup')
+        // font for menu text
+        const fontProperties = {
+          fontFamily: 'Rubik Puddles',
+          align: 'center',
+      };
+       // gameSize
+       const gameWidth = this.scale.width;
+       const gameHeight = this.scale.height;
+
+      //  set the background
+       const video = this.add.video(0, 0, 'icePlanet');
+       video.setOrigin(0.5);
+       video.setLoop(true);
+       video.play(true);
+       const scaleX = gameWidth / video.width;
+       const scaleY = gameHeight / video.height;
+       const scale = Math.min(scaleX, scaleY);
+       video.setPosition(gameWidth / 2, gameHeight / 2);
+       video.setLoop(false);
+
+       this.time.delayedCall(5000, () => {
+          const button = this.add.sprite(gameWidth * .9, gameHeight *.8, 'button')
+          .setInteractive()
+          .setScale(.25)
+          .setAlpha(0);
+          // Create a fade-in tween for the button
+          this.tweens.add({
+              targets: button,
+              alpha: 1,
+              scaleX: .5,
+              scaleY: .5,
+              duration:1000,
+              ease: 'Power1',
+              yoyo: true,
+              repeat: -1
+          });
+    
+        button.on('pointerdown', () => {
+          this.time.delayedCall(1000, () => {
+            this.cameras.main.fade(1000, 0,0,0);
+            this.scene.start('LevelThree', {mutevalue: this.mutevalue});
+          }, [], this);
+        });
+      });
+  }
 }
 
 //  ------------------------------------------------------------------------------------------------------------
@@ -475,6 +604,7 @@ class LevelOne extends ConfigureScene {
     }
     
     create() {
+      this.cameras.main.fadeIn(1000, 0, 0, 0);
       // feedback sound
       const sound = this.sound.add('trashPickup');
       const fontProperties = {
@@ -509,8 +639,8 @@ class LevelOne extends ConfigureScene {
 
         
         //  settings
-        const settingsText = this.add.text(centerX, centerY, '⚙️');
-        settingsText.setOrigin(-6,4);
+        const settingsText = this.add.text(0, 0, '⚙️');
+        // settingsText.setOrigin(-6,4);
         settingsText.setFontSize(gameWidth * .05);
         settingsText.setInteractive();
         settingsText.on('pointerdown', () => {
@@ -572,7 +702,8 @@ class LevelOne extends ConfigureScene {
         this.physics.add.collider(this.nova,platform5);
         // collision detection for portal
         // this,
-        this.physics.add.collider(this.nova, this.portal,this.goNext.bind(this,'LevelTwo'), null, this);
+        //add transition to Cinematic Two
+        this.physics.add.collider(this.nova, this.portal,this.goNext.bind(this,'CinematicTwo'), null, this);
         // collision detection for trash
         this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
         // Create the input controls
@@ -608,6 +739,7 @@ class LevelTwo extends ConfigureScene {
   }
 
   create(){
+    this.cameras.main.fadeIn(1000, 0, 0, 0);
       this.music = this.sound.add('level2Music');
       this.music.setLoop(true);
       // backgroundMusic.play();
@@ -647,8 +779,8 @@ class LevelTwo extends ConfigureScene {
     };
 
      //  settings
-     const settingsText = this.add.text(centerX, centerY, '⚙️');
-     settingsText.setOrigin(-6,4);
+     const settingsText = this.add.text(0, 0, '⚙️');
+     //settingsText.setOrigin(-6,4);
      settingsText.setFontSize(gameWidth * .05);
      settingsText.setInteractive();
      settingsText.on('pointerdown', () => {
@@ -747,7 +879,7 @@ class LevelTwo extends ConfigureScene {
       this.physics.add.collider(this.nova,platform4);
       this.physics.add.collider(this.nova,platform5);
       // collision detection for portal
-      this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'LevelThree'), null, this);
+      this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'CinematicThree'), null, this);
       // collision detection for trash
       this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
 
@@ -795,8 +927,7 @@ class LevelThree extends ConfigureScene {
  
   
   create(){
-   
-
+    this.cameras.main.fadeIn(1000, 0, 0, 0);
     // Music
     this.music = this.sound.add('level3Music');
     this.music.setLoop(true);
@@ -833,8 +964,8 @@ class LevelThree extends ConfigureScene {
     };
 
      //  settings
-     const settingsText = this.add.text(centerX, centerY, '⚙️');
-     settingsText.setOrigin(-6,4);
+     const settingsText = this.add.text(0, 0, '⚙️');
+     // settingsText.setOrigin(-6,4);
      settingsText.setFontSize(gameWidth * .05);
      settingsText.setInteractive();
      settingsText.on('pointerdown', () => {
@@ -850,12 +981,12 @@ class LevelThree extends ConfigureScene {
     
     // Create the platforms
     const platform = new Platform(this,gameWidth * .1,gameHeight * .94, gameWidth * 0.2, gameHeight * 0.1, 0x8AC1FA);
-    const platform2 = new Platform(this,gameWidth * .5,gameHeight * .94, gameWidth * 0.3, gameHeight * 0.1, 0x8AC1FA);
+    const platform2 = new Platform(this,gameWidth * .52,gameHeight * .94, gameWidth * 0.25, gameHeight * 0.1, 0x8AC1FA);
     const platform3 = new Platform(this,gameWidth * .5,gameHeight * .69, gameWidth * 0.025, gameHeight * 0.4, 0x8AC1FA);
-    const platform4 = new Platform(this,gameWidth * .39,gameHeight * .5, gameWidth * 0.2, gameHeight * 0.025, 0x8AC1FA);
+    const platform4 = new Platform(this,gameWidth * .415,gameHeight * .5, gameWidth * 0.19, gameHeight * 0.025, 0x8AC1FA);
     const platform5 = new Platform(this,gameWidth * .05,gameHeight * .5, gameWidth * 0.1, gameHeight * 0.025, 0x8AC1FA);
-    const platform6 = new Platform(this,gameWidth * .2,gameHeight * .7, gameWidth * 0.25, gameHeight *.025, 0x8AC1FA);
-    const platform7 = new Platform(this,gameWidth * .6,gameHeight * .65, gameWidth * 0.2, gameHeight *.025, 0x8AC1FA);
+    const platform6 = new Platform(this,gameWidth * .22,gameHeight * .7, gameWidth * 0.2, gameHeight *.025, 0x8AC1FA);
+    const platform7 = new Platform(this,gameWidth * .57,gameHeight * .62, gameWidth * 0.15, gameHeight *.025, 0x8AC1FA);
     const platform8 = new Platform(this,gameWidth * .9,gameHeight * .9, gameWidth * 0.2, gameHeight *.2, 0x8AC1FA);
     const platform9 = new Platform(this,gameWidth * .9,gameHeight * .2, gameWidth * 0.2, gameHeight *.025, 0x8AC1FA);
     const platform10 = new Platform(this,gameWidth * .7,gameHeight * .3, gameWidth * 0.2, gameHeight * 0.025, 0x8AC1FA);
@@ -925,7 +1056,7 @@ class LevelThree extends ConfigureScene {
     this.physics.add.collider(this.nova,platform10);
 
     // collision detection for portal
-    this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'Menu'), null, this);
+    this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'Outro'), null, this);
 
     // collision detection for trash
     this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
@@ -946,6 +1077,67 @@ class LevelThree extends ConfigureScene {
       // Restart the scene.
       this.scene.restart();
     }
+  }
+}
+// ------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------- Outro -----------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+class Outro extends ConfigureScene {
+  constructor() {
+      super('Outro');
+  }
+  init(data){
+    this.mutevalue = data.mutevalue;
+    this.previousScene = data.previousScene;
+  }
+
+  create(){
+        const sound = this.sound.add('trashPickup')
+        // font for menu text
+        const fontProperties = {
+          fontFamily: 'Rubik Puddles',
+          align: 'center',
+      };
+       // gameSize
+       const gameWidth = this.scale.width;
+       const gameHeight = this.scale.height;
+
+      //  set the background
+       const video = this.add.video(0, 0, 'star');
+       video.setOrigin(0.5);
+       video.setLoop(true);
+       video.play(true);
+       const scaleX = gameWidth / video.width;
+       const scaleY = gameHeight / video.height;
+       const scale = Math.min(scaleX, scaleY);
+       video.setPosition(gameWidth / 2, gameHeight / 2);
+       video.setLoop(false);
+
+      //     const button = this.add.sprite(gameWidth * .9, gameHeight *.8, 'button')
+      //     .setInteractive()
+      //     .setScale(.25)
+      //     .setAlpha(0);
+      //     // Create a fade-in tween for the button
+      //     this.tweens.add({
+      //         targets: button,
+      //         alpha: 1,
+      //         scaleX: .5,
+      //         scaleY: .5,
+      //         duration:1000,
+      //         ease: 'Power1',
+      //         yoyo: true,
+      //         repeat: -1
+      //     });
+      // this.time.delayedCall(5000, () => {
+      //   button.on('pointerdown', () => {
+      //     this.time.delayedCall(1000, () => {
+      //       this.cameras.main.fade(1000, 0,0,0);
+      //       this.scene.start('LevelThree', {mutevalue: this.mutevalue});
+      //     }, [], this);
+      //   });
+      // });
+
   }
 }
 
@@ -986,8 +1178,8 @@ class Settings extends ConfigureScene {
         const scale = Math.min(scaleX, scaleY);
         video.setPosition(gameWidth / 2, gameHeight / 2);
 
-        const settingsText = this.add.text(centerX, centerY, 'Settings',fontProperties);
-        settingsText.setOrigin(0.5,3);
+        const settingsText = this.add.text(0, 0, 'Settings',fontProperties);
+        //settingsText.setOrigin(0.5,3);
         settingsText.setFontSize(gameWidth * .05);
 
         this.back = this.add.text(centerX, centerY, 'back', fontProperties).setInteractive()
@@ -1076,7 +1268,7 @@ const config = {
     keyboard: true,
     touch: true,
   },
-  scene: [ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree],
+  scene: [ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree,CinematicTwo,CinematicThree,Outro],
   // ConfigureScene,Menu,Settings,IntroCinematic,LevelOne
   // ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree
   // create game object and set the initial mute state
