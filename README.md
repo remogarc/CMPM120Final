@@ -1,7 +1,7 @@
 # CMPM120Final
 Final Project for CMPM120
 
-- Link to our main game, Cosmic Cleanup: [...]
+- Link to our main game, Cosmic Cleanup: https://remogarc.github.io/CMPM120Final/CosmicCleanup/index.html
 - Link to our prototypes: 
     - Core Gameplay: https://remogarc.github.io/CMPM120Final/CoreGamplay/index.html
     - Cinematics: https://remogarc.github.io/CMPM120Final/SceneFlow/index.html
@@ -15,4 +15,4 @@ Final Project for CMPM120
     - Pallavi Rajeev
     - Reese Garcia: Tech Lead 
 - Assets credits:
-    - Art and music created by Garret Hong using [...].
+    - Art and music created by Garret Hong using Garageband, Procreate, and Adobe After Effects.
