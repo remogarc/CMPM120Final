@@ -223,6 +223,11 @@ class Menu extends ConfigureScene {
         this.startText.setInteractive();
           // To start the game
         this.startText.on('pointerdown', () => {
+            // const synth = new Tone.Synth().toDestination();
+            // synth.triggerAttackRelease("G5", "8n");
+            // if (Tone.context.state !== "running") {
+            //     Tone.start();
+            // }
             backgroundMusic.stop();
             if(this.mutevalue == false){
                 sound.play();
@@ -700,7 +705,21 @@ class LevelOne extends ConfigureScene {
         // collision detection for portal
         // this,
         //add transition to Cinematic Two
-        this.physics.add.collider(this.nova, this.portal,this.goNext.bind(this,'CinematicTwo'), null, this);
+        //this.physics.add.collider(this.nova, this.portal,this.goNext.bind(this,'CinematicTwo'), null, this);
+        
+        this.physics.add.collider(this.nova, this.portal, () => {
+          // Play the tone
+          const synth = new Tone.Synth().toDestination();
+          synth.triggerAttackRelease("G5", "8n");
+          if (Tone.context.state !== "running") {
+            Tone.start();
+          }
+        
+          // Call the goNext function to switch to the next scene
+          this.goNext('CinematicTwo');
+        }, null, this);
+        
+        
         // collision detection for trash
         this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
         // Create the input controls
@@ -877,7 +896,23 @@ class LevelTwo extends ConfigureScene {
       this.physics.add.collider(this.nova,platform4);
       this.physics.add.collider(this.nova,platform5);
       // collision detection for portal
-      this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'CinematicThree'), null, this);
+      //this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'CinematicThree'), null, this);
+      
+      this.physics.add.collider(this.nova, this.portal, () => {
+        // Play the tone
+        const synth = new Tone.Synth().toDestination();
+        synth.triggerAttackRelease("G5", "8n");
+        if (Tone.context.state !== "running") {
+          Tone.start();
+        }
+      
+        // Call the goNext function to switch to the next scene
+        this.goNext('CinematicThree');
+      }, null, this);
+      
+      
+      
+      
       // collision detection for trash
       this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
 
@@ -1054,7 +1089,24 @@ class LevelThree extends ConfigureScene {
     this.physics.add.collider(this.nova,platform10);
 
     // collision detection for portal
-    this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'Outro'), null, this);
+    //this.physics.add.collider(this.nova, this.portal, this.goNext.bind(this, 'Outro'), null, this);
+
+
+    this.physics.add.collider(this.nova, this.portal, () => {
+      // Play the tone
+      const synth = new Tone.Synth().toDestination();
+      synth.triggerAttackRelease("G5", "8n");
+      if (Tone.context.state !== "running") {
+        Tone.start();
+      }
+    
+      // Call the goNext function to switch to the next scene
+      this.goNext('Outro');
+    }, null, this);
+    
+
+
+
 
     // collision detection for trash
     this.physics.add.collider(this.nova,this.trashGroup,this.trashTouched);
