@@ -19,7 +19,6 @@ console.log('game.js loaded');
 // Flow of the game
 // MENU - > Cinematic -> Level1 -> Cinematic -> Level2 -> Cinematic -> Level3 -> Cinematic -> End/ Credits
 // -----------------------------------------------------------------------------------------------------------------------
-
 //  -----------------------------------------------------------------------------------------------------------------------
 //  -------------------------------------------------- ConfigureScene -----------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------
@@ -30,9 +29,7 @@ class ConfigureScene extends Phaser.Scene {
     this.trashGroup = null;
     this.touchedTrashCount = 0;
     this.trashCount = 0;
-    // this.nextLevel = 0;
-    // this.music = null;
-    // this.mutevalue = false;
+   
   }
   preload(){
     // Load the font
@@ -246,9 +243,9 @@ class Menu extends ConfigureScene {
 
 
         // settings text
-        this.settingsText = this.add.text(0,0, '⚙️', fontProperties)
+        this.settingsText = this.add.text(centerX,centerY, '⚙️', fontProperties)
         this.settingsText.setColor('#ffffff');
-        // this.settingsText.setOrigin(-4, 2);
+        this.settingsText.setOrigin(5, 2.25);
         this.settingsText.setInteractive();
         this.settingsText.on('pointerdown', () => {
             backgroundMusic.stop();
@@ -639,8 +636,8 @@ class LevelOne extends ConfigureScene {
 
         
         //  settings
-        const settingsText = this.add.text(0, 0, '⚙️');
-        // settingsText.setOrigin(-6,4);
+        const settingsText = this.add.text(centerX,centerY, '⚙️');
+        settingsText.setOrigin(7,4.5);
         settingsText.setFontSize(gameWidth * .05);
         settingsText.setInteractive();
         settingsText.on('pointerdown', () => {
@@ -779,8 +776,9 @@ class LevelTwo extends ConfigureScene {
     };
 
      //  settings
-     const settingsText = this.add.text(0, 0, '⚙️');
-     //settingsText.setOrigin(-6,4);
+     const settingsText = this.add.text(centerX, centerY, '⚙️');
+     settingsText.setOrigin(7,4.5);
+
      settingsText.setFontSize(gameWidth * .05);
      settingsText.setInteractive();
      settingsText.on('pointerdown', () => {
@@ -964,8 +962,8 @@ class LevelThree extends ConfigureScene {
     };
 
      //  settings
-     const settingsText = this.add.text(0, 0, '⚙️');
-     // settingsText.setOrigin(-6,4);
+     const settingsText = this.add.text(centerX,centerY, '⚙️', fontProperties);
+     settingsText.setOrigin(7,4.5);
      settingsText.setFontSize(gameWidth * .05);
      settingsText.setInteractive();
      settingsText.on('pointerdown', () => {
@@ -1178,8 +1176,8 @@ class Settings extends ConfigureScene {
         const scale = Math.min(scaleX, scaleY);
         video.setPosition(gameWidth / 2, gameHeight / 2);
 
-        const settingsText = this.add.text(0, 0, 'Settings',fontProperties);
-        //settingsText.setOrigin(0.5,3);
+        const settingsText = this.add.text(centerX,centerY, 'Settings',fontProperties);
+        settingsText.setOrigin(0.5,3);
         settingsText.setFontSize(gameWidth * .05);
 
         this.back = this.add.text(centerX, centerY, 'back', fontProperties).setInteractive()
