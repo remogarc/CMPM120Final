@@ -1,6 +1,7 @@
 // // Where we will have our prefabs for the game
 
 console.log("prefabs.js loaded");
+console.log('ADKFLSJF')
 
 // InputControls prefab
 export class InputControls {
@@ -82,11 +83,6 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         const spriteHeightRatio = 0.1;
 
 
-        // // change hitbox size
-        // this.body.setSize(this.scene.width * .12, this.scene.height *.3);
-        // // change display size sprite
-        // this.setDisplaySize(this.scene.width *.05, this.scene.height *.1);
-
 
         this.body.setSize(this.scene.width * hitboxWidthRatio, this.scene.height * hitboxHeightRatio);
         this.setDisplaySize(this.scene.width * spriteWidthRatio, this.scene.height * spriteHeightRatio);
@@ -106,36 +102,7 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         this.setFlipX(true); // Flip the sprite to face right
     }
     jump() {
-        // const initialJumpVelocity = -80;
-        // const heightRatio = 0.1; // Adjust this value to match your character's height ratio
-        // const characterHeight = this.displayHeight;
-        // const scaleFactor = characterHeight / (this.scene.height * heightRatio);
-
-        // // Adjust the jump velocity for smaller screen sizes
-        // if (this.scene.height < 900) {
-        //     const smallerDeviceJumpAdjustment = 0.7; // Adjust this value to control the jump height on smaller devices
-        //     this.jumpVelocity = initialJumpVelocity * scaleFactor * smallerDeviceJumpAdjustment;
-        // } else {
-        //     this.jumpVelocity = initialJumpVelocity * scaleFactor;
-        // }
-
-        // if (this.jumpVelocity < -200) {
-        //     this.jumpVelocity = -200; // Limit the maximum jump velocity if desired
-        // }
-        // const jumpVelocity = initialJumpVelocity * scaleFactor;
-        // this.body.velocity.y = this.jumpVelocity;
-
-
-        // if (this.body.onFloor()) {
-        //     const initialJumpVelocity = -200; // Adjust the initial velocity as needed
-        //     const heightRatio = 0.1; // Adjust this value to match your character's height ratio
-        //     const characterHeight = this.displayHeight;
-        //     const scaleFactor = characterHeight / (this.scene.height * heightRatio);
-        
-        //     const jumpVelocity = initialJumpVelocity * scaleFactor;
-        //     this.body.velocity.y = jumpVelocity;
-        //   }
-
+        //  Allow the player to jump if they are touching the ground.
         if (this.body.onFloor()) {
             if (this.scene.height < 900){
                 this.body.velocity.y = -80 * (this.scene.height * .006);
@@ -197,6 +164,7 @@ export class PlayerChar extends Phaser.GameObjects.Sprite {
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
     }
+   
 }
 
 // Platform prefab

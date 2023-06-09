@@ -1,6 +1,5 @@
 // Our prefab.js file is a collection of classes that we can use to create game objects.
 import { InputControls,Platform,PlayerChar,Trash} from 'https://remogarc.github.io/CMPM120Final/CoreGamplay/JS/prefabs.js';
-// /CoreGamplay/js/prefabs.js'
 // test comment
 console.log('game.js loaded');
 
@@ -105,6 +104,18 @@ class ConfigureScene extends Phaser.Scene {
     if(this.mutevalue == false){
       trashPickupSound.play();
     }
+    // particles 
+    const emitter = this.add.particles(0,0,'trash',{
+      speed: 24,
+      lifespan: 1500,
+      quantity: 10,
+      scale: { start: 0.3, end: 0 },
+      emitting: false,
+      emitZone: { type: 'edge', source: trash.getBounds(), quantity: 42 },
+      duration: 500
+    })
+
+    emitter.start(2000);
     // increment the trash count
     this.touchedTrashCount++;
     console.log('Trash picked up by Nova', this.touchedTrashCount);
@@ -170,6 +181,8 @@ class Menu extends ConfigureScene {
     }
    
     create() {
+    
+
       console.log(this.mutevalue);
         // gameSize
         const gameWidth = this.scale.width;
@@ -245,8 +258,7 @@ class Menu extends ConfigureScene {
             yoyo: true,
             repeat: -1,
         });
-
-
+       
         // settings text
         this.settingsText = this.add.text(centerX,centerY, '⚙️', fontProperties)
         this.settingsText.setColor('#ffffff');
@@ -288,6 +300,8 @@ class Menu extends ConfigureScene {
         this.scale.on('resize', this.resizeListener);
         // Initial resize call to set the correct font size, and check orientation
         this.updateTextOnResize();
+
+        
     }
     handleOrientationChange(){
       setTimeout(() => {
