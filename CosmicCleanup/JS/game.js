@@ -14,6 +14,7 @@ console.log('game.js loaded');
 // Level3 - create the third level scene
 // config - configure the game settings
 
+
 // -----------------------------------------------------------------------------------------------------------------------
 // Flow of the game
 // MENU - > Cinematic -> Level1 -> Cinematic -> Level2 -> Cinematic -> Level3 -> Cinematic -> End/ Credits
