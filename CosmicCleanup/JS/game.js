@@ -70,6 +70,8 @@ class ConfigureScene extends Phaser.Scene {
     this.load.video('earthPlanet', '../Cinematics/Assets/earth.mp4');
     this.load.video('marsPlanet', '../Cinematics/Assets/mars.mp4');
     this.load.video('icePlanet', '../Cinematics/Assets/ice.mp4');
+    // end cinematic
+    this.load.video('end','../Cinematics/Assets/ending.mp4');
   }
   create(){
     WebFont.load({
@@ -431,7 +433,7 @@ class IntroCinematic extends ConfigureScene {
             //this.cameras.main.fade(1000, 0,0,0);
             this.scene.start('LevelOne', {mutevalue: this.mutevalue});
           //}, [], this);
-      };
+        };
         
        
 
@@ -1158,51 +1160,84 @@ class Outro extends ConfigureScene {
   }
 
   create(){
-        const sound = this.sound.add('trashPickup')
-        // font for menu text
-        const fontProperties = {
-          fontFamily: 'Rubik Puddles',
-          align: 'center',
-      };
-       // gameSize
-       const gameWidth = this.scale.width;
-       const gameHeight = this.scale.height;
+    const sound = this.sound.add('trashPickup')
+    // font for menu text
+    const fontProperties = {
+      fontFamily: 'Rubik Puddles',
+      align: 'center',
+  };
+   // gameSize
+   const gameWidth = this.scale.width;
+   const gameHeight = this.scale.height;
 
-      //  set the background
-       const video = this.add.video(0, 0, 'star');
-       video.setOrigin(0.5);
-       video.setLoop(true);
-       video.play(true);
-       const scaleX = gameWidth / video.width;
-       const scaleY = gameHeight / video.height;
-       const scale = Math.min(scaleX, scaleY);
-       video.setPosition(gameWidth / 2, gameHeight / 2);
-       video.setLoop(false);
+   //video that acts like music for background
+   const videoSound = this.add.video(0, 0, 'end')
+   videoSound.setVisible(false);
 
-      //     const button = this.add.sprite(gameWidth * .9, gameHeight *.8, 'button')
-      //     .setInteractive()
-      //     .setScale(.25)
-      //     .setAlpha(0);
-      //     // Create a fade-in tween for the button
-      //     this.tweens.add({
-      //         targets: button,
-      //         alpha: 1,
-      //         scaleX: .5,
-      //         scaleY: .5,
-      //         duration:1000,
-      //         ease: 'Power1',
-      //         yoyo: true,
-      //         repeat: -1
-      //     });
-      // this.time.delayedCall(5000, () => {
-      //   button.on('pointerdown', () => {
-      //     this.time.delayedCall(1000, () => {
-      //       this.cameras.main.fade(1000, 0,0,0);
-      //       this.scene.start('LevelThree', {mutevalue: this.mutevalue});
-      //     }, [], this);
-      //   });
-      // });
+   if(this.mutevalue == false){
+    videoSound.play(true);
+  }
 
+  //  set the background
+   const video = this.add.video(0, 0, 'end');
+   video.setOrigin(0.5);
+   video.setLoop(true);
+   video.play(true);
+   const scaleX = gameWidth / video.width;
+   const scaleY = gameHeight / video.height;
+   const scale = Math.min(scaleX, scaleY);
+   video.setPosition(gameWidth / 2, gameHeight / 2);
+   video.setLoop(false);
+
+
+    
+ 
+
+  // add an event listener to the video when it is done playing and add go to the next scene button 
+  video.on('complete', () => {
+      videoSound.stop();
+      
+
+      // set the background
+      const video = this.add.video(0, 0, 'star');
+      video.setOrigin(0.5);
+      video.setLoop(true);
+      video.play(true);
+      
+
+      const scaleX = gameWidth / video.width;
+      const scaleY = gameHeight / video.height;
+      const scale = Math.min(scaleX, scaleY);
+      video.setPosition(gameWidth / 2, gameHeight / 2);
+      // add text to the scene
+      const text = this.add.text(gameWidth * .5, gameHeight * .1, 'As the ship fades away and as zoom towards the Cosmos deep down the mission is not over ', fontProperties)
+      .setOrigin(0.5)
+      .setFontSize(gameWidth * .025)
+
+      const button = this.add.sprite(gameWidth * .9, gameHeight *.8, 'button')
+      .setInteractive()
+      .setScale(.25)
+      .setAlpha(0);
+      // Create a fade-in tween for the button
+      this.tweens.add({
+          targets: button,
+          alpha: 1,
+          scaleX: .5,
+          scaleY: .5,
+          duration:1000,
+          ease: 'Power1',
+          yoyo: true,
+          repeat: -1
+      });
+
+      button.on('pointerdown', () => {
+        this.time.delayedCall(1000, () => {
+          this.cameras.main.fade(1000, 0,0,0);
+          this.scene.start('Menu', {mutevalue: this.mutevalue});
+        }, [], this);
+        });
+      });
+     
   }
 }
 
@@ -1235,6 +1270,8 @@ class Settings extends ConfigureScene {
         video.setOrigin(0.5);
         video.setLoop(true);
         video.play(true);
+
+        
 
 
         // scale the video
@@ -1333,11 +1370,8 @@ const config = {
     keyboard: true,
     touch: true,
   },
-  scene: [ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree,CinematicTwo,CinematicThree,Outro],
-  // ConfigureScene,Menu,Settings,IntroCinematic,LevelOne
-  // ConfigureScene,Menu,LevelOne,LevelTwo,LevelThree
-  // create game object and set the initial mute state
-
+  scene: [Outro],
+  // ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree,CinematicTwo,CinematicThree
 };
 
 const game = new Phaser.Game(config);
