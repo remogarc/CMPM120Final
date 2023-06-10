@@ -7,7 +7,7 @@ Final Project for CMPM120
     - [Scene Flow](https://remogarc.github.io/CMPM120Final/SceneFlow/index.html)
     - [Cinematics](https://remogarc.github.io/CMPM120Final/Cinematics/index.html)
 - Our game takes place in a distant future of our time where the player starts on Earth, but travels to other planets in space. We also incorporated the use of portals throughout the game, where the player is teleported across a nearby space. These are simply used as a way to transition the player from the planet they are exploring back to their spaceship hovering nearby.
-- Our game implements the three selectable requirements of ​data-driven experience progression, advanced visual assets, and procedural graphics. This is accomplished by our use of a JSON data file, a spritesheet for our player, and the Phaser graphics class for our platforms. 
+- Our game implements the three selectable requirements of advanced visual assets, procedural audio, and procedural graphics. This is accomplished by the implementation of videos for our cutscenes, the use of particle effects when the player collects trash, and coded audio with the use of tone.js to produce a sound effect when the player goes through the portal. 
 - Contributors: 
     - Aaron Dangc: Production Lead
     - Garret Hong
