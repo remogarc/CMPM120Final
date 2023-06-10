@@ -20,17 +20,80 @@
     <div class="header">
         <h1 class="text-center">Cosmic Cleanup</h1>
     </div>
-    <div class="d-flex justify-content-between">
-        <a href="CoreGamplay/index.html" class="btn btn-primary">CORE GAMPLAY</a>
-        <a href="SceneFlow/index.html" class="btn btn-primary">SCENE FLOW</a>
-        <a href="Cinematics/index.html" class="btn btn-primary">CINEMAITICS</a>
-        <a href="CosmicCleanup/index.html" class="btn btn-primary">COSMIC CLEANUP</a>
-        <a href="https://github.com/remogarc/CMPM120Final" class="btn btn-primary">Source Code</a>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark sticky-top px-3" id="nav">
+        <a class="navbar-brand btn btn-primary" href="CosmicCleanup/index.html">PLAY</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary me-lg-2 me-0" href="CoreGamplay/index.html">CORE GAMPLAY</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary me-lg-2 me-0" href="SceneFlow/index.html">SCENE FLOW</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary me-lg-2 me-0" href="Cinematics/index.html">CINEMATICS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-primary me-lg-2 me-0" href="https://github.com/remogarc/CMPM120Final" target="_blank">Source Code</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      
+    <div class="video-container">
+        <video autoplay loop mute>
+            <source src="/Cinematics/Assets/spacewallp.mp4">
+        </video>
+        <div class="overlay d-flex align-items-center">
+            <div class="container ">
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- <img src="CoreGamplay/Assets/earth.png" alt="Earth picture" class="img-fluid"> -->
+                        <!--  -->
+                        <div id="pictureCarousel" class="carousel slide" data-bs-ride="carousel">
+                           
+                            <!-- Slides -->
+                            <div class="carousel-inner">
+                              <div class="carousel-item active">
+                                <img src="CoreGamplay/Assets/earth.png" alt="Earth picture" class="img-fluid">
+                              </div>
+                              <div class="carousel-item">
+                                <img src="CoreGamplay/Assets/mars.png" alt="Mars picture" class="img-fluid">
+                              </div>
+                              <div class="carousel-item">
+                                <img src="CoreGamplay/Assets/ice.png" alt="Ice picture" class="img-fluid">
+                              </div>
+                              <!-- Add more carousel items for additional pictures -->
+                            </div>
+                
+                            <!-- Controls -->
+                            <a class="carousel-control-prev" href="#pictureCarousel" role="button" data-bs-slide="prev">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#pictureCarousel" role="button" data-bs-slide="next">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Next</span>
+                            </a>
+                        </div>
+
+                        
+                    </div>
+                    <br>
+                    <div class="col-md-6">
+                        <h1>Cleaning the Cosmos one step at a time</h1>
+                        <br>
+                        <a class="navbar-brand btn btn-primary" href="CosmicCleanup/index.html">PLAY</a>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
     </div>
-
-    <br>
-  
-
 
 </body>
 </html>
