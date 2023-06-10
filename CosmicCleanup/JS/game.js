@@ -830,16 +830,11 @@ class LevelTwo extends ConfigureScene {
 
 
       // add platforms
-      const platform = new Platform(this,gameWidth * .05,gameHeight * .73, gameWidth * 0.1, gameHeight * 0.5, 0xD2B48C);
-
-      const platform2 = new Platform(this,gameWidth * .2,gameHeight * .83, gameWidth * 0.2, gameHeight * 0.3, 0xD2B48C);
-
+      const platform = new Platform(this,gameWidth * .05,gameHeight * .75, gameWidth * 0.1, gameHeight * 0.53, 0xD2B48C);
+      const platform2 = new Platform(this,gameWidth * .2,gameHeight * .85, gameWidth * 0.2, gameHeight * 0.33, 0xD2B48C);
       const platform3 = new Platform(this,gameWidth * .4,gameHeight * .4, gameWidth * 0.2, gameHeight * 0.05, 0xD2B48C);
-
       const platform4 = new Platform(this,gameWidth * .6,gameHeight * .9, gameWidth * 0.2, gameHeight * 0.3, 0xD2B48C);
-
       const platform5 = new Platform(this,gameWidth * .9,gameHeight * .2, gameWidth * 0.2, gameHeight * 0.05, 0xD2B48C);
-
       const platform6 = new Platform(this,gameWidth * .7,gameHeight * .5, gameWidth * 0.15, gameHeight * 0.05, 0xD2B48C);
       platform6.body.setImmovable(true);
 
@@ -873,7 +868,7 @@ class LevelTwo extends ConfigureScene {
       const trash2 = this.createTrash(gameWidth * .15,gameHeight * .64,'trash',this.trashGroup,gameWidth *.04,gameHeight * .1);
       const trash3 = this.createTrash(gameWidth * .45,gameHeight * .34,'trash',this.trashGroup,gameWidth *.05,gameHeight * .1);
       // Create the portal
-      this.portal = this.add.sprite(gameWidth * .98, gameHeight * 0.1, 'portal');
+      this.portal = this.add.sprite(gameWidth * .98, gameHeight * 0.12, 'portal');
       this.anims.create({
           key: 'portal',
           frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 29 }),
@@ -1030,8 +1025,8 @@ class LevelThree extends ConfigureScene {
 
     
     // Create the platforms
-    const platform = new Platform(this,gameWidth * .1,gameHeight * .94, gameWidth * 0.2, gameHeight * 0.1, 0x8AC1FA);
-    const platform2 = new Platform(this,gameWidth * .52,gameHeight * .94, gameWidth * 0.25, gameHeight * 0.1, 0x8AC1FA);
+    const platform = new Platform(this,gameWidth * .1,gameHeight * .96, gameWidth * 0.2, gameHeight * 0.13, 0x8AC1FA);
+    const platform2 = new Platform(this,gameWidth * .52,gameHeight * .95, gameWidth * 0.25, gameHeight * 0.12, 0x8AC1FA);
     const platform3 = new Platform(this,gameWidth * .5,gameHeight * .69, gameWidth * 0.025, gameHeight * 0.4, 0x8AC1FA);
     const platform4 = new Platform(this,gameWidth * .415,gameHeight * .5, gameWidth * 0.19, gameHeight * 0.025, 0x8AC1FA);
     const platform5 = new Platform(this,gameWidth * .05,gameHeight * .5, gameWidth * 0.1, gameHeight * 0.025, 0x8AC1FA);
@@ -1077,7 +1072,7 @@ class LevelThree extends ConfigureScene {
      
 
     // Create the portal
-    this.portal = this.add.sprite(gameWidth * .95, gameHeight * 0.7, 'portal');
+    this.portal = this.add.sprite(gameWidth * .95, gameHeight * 0.73, 'portal');
     this.anims.create({
         key: 'portal',
         frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 29 }),
@@ -1213,6 +1208,7 @@ class Outro extends ConfigureScene {
       const text = this.add.text(gameWidth * .5, gameHeight * .1, 'As the ship fades away and as zoom towards the Cosmos deep down the mission is not over ', fontProperties)
       .setOrigin(0.5)
       .setFontSize(gameWidth * .025)
+      .setWordWrapWidth(gameWidth * .7);
 
       const button = this.add.sprite(gameWidth * .9, gameHeight *.8, 'button')
       .setInteractive()
@@ -1370,8 +1366,8 @@ const config = {
     keyboard: true,
     touch: true,
   },
-  scene: [Outro],
-  // ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree,CinematicTwo,CinematicThree
+  scene: [ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree,CinematicTwo,CinematicThree,Outro],
+  // ConfigureScene,Menu,Settings,IntroCinematic,LevelOne,LevelTwo,LevelThree,CinematicTwo,CinematicThree,Outro
 };
 
 const game = new Phaser.Game(config);
