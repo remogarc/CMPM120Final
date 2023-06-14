@@ -1205,7 +1205,7 @@ class Outro extends ConfigureScene {
       const scale = Math.min(scaleX, scaleY);
       video.setPosition(gameWidth / 2, gameHeight / 2);
       // add text to the scene
-      const text = this.add.text(gameWidth * .5, gameHeight * .1, 'As the ship fades away and as zoom towards the Cosmos deep down the mission is not over ', fontProperties)
+      const text = this.add.text(gameWidth * .5, gameHeight * .1, 'As the ship fades away and zooms towards the Cosmos deep down the mission is not over ', fontProperties)
       .setOrigin(0.5)
       .setFontSize(gameWidth * .025)
       .setWordWrapWidth(gameWidth * .7);
