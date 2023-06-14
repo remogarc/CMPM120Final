@@ -469,6 +469,13 @@ class IntroCinematic extends ConfigureScene {
                 repeat: -1
             });
 
+
+            // const text = this.add.text(gameWidth * .5, gameHeight * .1, 'In a not-so-distant future, the universe has become a desolate wasteland, overrun by pollution, technology gone awry, and a deteriorating ecosystem. The remnants of humanity have long abandoned the planet, seeking refuge in distant colonies across the cosmos. However, the consequences of their actions continue to haunt them. Nova, a young and adventurous space explorer, is sent on a mission by an intergalactic organization dedicated to preserving the delicate balance. Equipped with a high-tech exosuit designed for cleaning up the cosmic mess left behind by humanity, Nova is tasked with restoring three planets polluted atmosphere. As Nova ventures through the ruins of Earth, the remnants of once-thriving cities, now decaying and overgrown, provide a stark reminder of the devastation caused by human neglect and pollution.', fontProperties)
+            // .setOrigin(0.5)
+            // .setFontSize(gameWidth * .025)
+            // .setWordWrapWidth(gameWidth * .7);
+
+
             button.on('pointerdown', () => {
               this.time.delayedCall(1000, () => {
                 this.cameras.main.fade(1000, 0,0,0);
@@ -536,6 +543,14 @@ class CinematicTwo extends ConfigureScene {
               yoyo: true,
               repeat: -1
           });
+
+
+
+            // const text = this.add.text(gameWidth * .5, gameHeight * .1, 'Nova must navigate treacherous terrain and strategically utilize her advanced technology to collect and dispose of the various forms of pollution that plague the universe.', fontProperties)
+            // .setOrigin(0.5)
+            // .setFontSize(gameWidth * .025)
+            // .setWordWrapWidth(gameWidth * .7);
+
       
         button.on('pointerdown', () => {
           this.time.delayedCall(1000, () => {
@@ -599,6 +614,15 @@ class CinematicThree extends ConfigureScene {
               repeat: -1
           });
     
+
+
+
+            // const text = this.add.text(gameWidth * .5, gameHeight * .1, 'As Nova collects trash and purifies polluted areas, she witnesses small signs of rejuvenation. Life emerges while the atmosphere gradually clears. There is a sense of renewed hope for the future of the universe.', fontProperties)
+            // .setOrigin(0.5)
+            // .setFontSize(gameWidth * .025)
+            // .setWordWrapWidth(gameWidth * .7);
+
+
         button.on('pointerdown', () => {
           this.time.delayedCall(1000, () => {
             this.cameras.main.fade(1000, 0,0,0);
